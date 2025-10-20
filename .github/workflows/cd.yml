@@ -25,7 +25,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./src  # ← FIXED: Build from src directory
+          context: ./src 
           push: true
           tags: |
             ghcr.io/lachi7/take-a-paw:latest
