@@ -28,5 +28,5 @@ jobs:
           context: ./src 
           push: true
           tags: |
-            ghcr.io/lachi7/take-a-paw:latest
+            ghcr.io/lachi7/take-a-paw:latest .
             ghcr.io/lachi7/take-a-paw:${{ github.sha }}
