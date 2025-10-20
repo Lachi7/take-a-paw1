@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <h1>Find Your Perfect Pet Companion! 🐾</h1>
+        <p class="lead">Browse pets from local shelters and rescue organizations</p>
+    </div>
+</div>
+
+<!-- Quiz Call to Action -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center py-5">
+                <h2 class="card-title">Not sure which pet is right for you?</h2>
+                <p class="card-text lead mb-4">Take our 2-minute quiz to find your perfect match!</p>
+                <a href="{{ url_for('quiz') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-search me-2"></i>Find My Perfect Pet Match
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Form -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Search Pets</h5>
+                <form action="{{ url_for('search_pets') }}" method="GET" class="row g-3">
+                    <div class="col-md-3">
+                        <select name="species" class="form-select">
+                            <option value="">All Species</option>
+                            <option value="dog">Dogs</option>
+                            <option value="cat">Cats</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="breed" class="form-control" placeholder="Breed">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="location" class="form-control" placeholder="Location">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pets Grid -->
+<!-- In the pets grid section -->
+<div class="row">
+    {% for pet in pets %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card pet-card h-100">
+            <img src="{{ pet.image }}" class="card-img-top" alt="{{ pet.name }}"
+                 style="height: 250px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title">{{ pet.name }}</h5>
+                <p class="card-text">
+                    <strong>{{ pet.species }}</strong> - {{ pet.breed }}<br>
+                    <small class="text-muted">
+                        {{ pet.age }} • {{ pet.gender }}<br>
+                        {{ pet.location }}
+                    </small>
+                </p>
+                <p class="card-text">{{ pet.description[:100] }}...</p>
+                
+                {% if pet.source == 'api' %}
+                <span class="badge bg-info">🐾 Real Shelter Pet</span>
+                {% else %}
+                <span class="badge bg-secondary">🏠 Local Rescue</span>
+                {% endif %}
+            </div>
+<!-- In the pet card footer section -->
+<div class="card-footer">
+    <a href="{{ url_for('pet_detail', pet_id=pet.id|urlencode) }}" class="btn btn-primary btn-sm">View Profile</a>
+    {% if not pet.adopted %}
+        <a href="{{ url_for('adopt_pet_form', pet_id=pet.id|urlencode) }}" class="btn btn-success btn-sm">Adopt Me</a>
+    {% else %}
+        <span class="badge bg-secondary">Adopted</span>
+    {% endif %}
+</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if not pets %}
+<div class="text-center">
+    <h3>No pets found matching your criteria</h3>
+    <p>Try adjusting your search or <a href="{{ url_for('add_pet') }}">add a pet</a> to our local database.</p>
+</div>
+{% endif %}
+
+<!-- Another Quiz Call to Action at the bottom -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card border-primary">
+            <div class="card-body text-center py-4">
+                <h4 class="card-title">Still unsure?</h4>
+                <p class="card-text">Let us help you find the perfect pet for your lifestyle!</p>
+                <a href="{{ url_for('quiz') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-magic me-2"></i>Take the Matching Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

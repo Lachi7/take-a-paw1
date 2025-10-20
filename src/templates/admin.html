@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Take A Paw{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2>Admin Dashboard</h2>
+    
+    <div class="row">
+        <!-- Statistics -->
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Pets</h5>
+                    <h2>{{ available_pets|length + adopted_pets|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Available</h5>
+                    <h2>{{ available_pets|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Adopted</h5>
+                    <h2>{{ adopted_pets|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Applications</h5>
+                    <h2>{{ adoption_requests|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Pets -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Available Pets</h5>
+                </div>
+                <div class="card-body">
+                    {% if available_pets %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Species</th>
+                                    <th>Breed</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pet in available_pets %}
+                                <tr>
+                                    <td>{{ pet.id }}</td>
+                                    <td>{{ pet.name }}</td>
+                                    <td>{{ pet.species }}</td>
+                                    <td>{{ pet.breed }}</td>
+                                    <td>{{ pet.location }}</td>
+                                    <td><span class="badge bg-success">Available</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No available pets.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adopted Pets -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Adopted Pets</h5>
+                </div>
+                <div class="card-body">
+                    {% if adopted_pets %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Species</th>
+                                    <th>Breed</th>
+                                    <th>Adopted By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pet in adopted_pets %}
+                                <tr>
+                                    <td>{{ pet.id }}</td>
+                                    <td>{{ pet.name }}</td>
+                                    <td>{{ pet.species }}</td>
+                                    <td>{{ pet.breed }}</td>
+                                    <td>{{ pet.adopted_by if pet.adopted_by else 'Unknown' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No adopted pets yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

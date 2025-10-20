@@ -1,0 +1,29 @@
+<div class="card pet-card h-100">
+    <img src="{{ pet.image if pet.image else '/static/placeholder.jpg' }}" 
+         class="card-img-top" 
+         alt="{{ pet.name }}"
+         style="height: 250px; object-fit: cover;">
+    <div class="card-body">
+        <h5 class="card-title">{{ pet.name }}</h5>
+        <p class="card-text">
+            <strong>{{ pet.species }}</strong> - {{ pet.breed }}<br>
+            <small class="text-muted">
+                {{ pet.age }} • {{ pet.gender if pet.gender else '' }}<br>
+                {{ pet.location }}
+            </small>
+        </p>
+        <p class="card-text">{{ (pet.description or 'No description available')[:120] }}...</p>
+        
+        {% if pet.source == 'api' %}
+        <span class="badge bg-info">From Shelter</span>
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        <a href="{{ url_for('pet_detail', pet_id=pet.id) }}" class="btn btn-primary btn-sm">View Profile</a>
+        {% if not pet.adopted %}
+            <a href="{{ url_for('adopt_pet_form', pet_id=pet.id) }}" class="btn btn-success btn-sm">Adopt Me</a>
+        {% else %}
+            <span class="badge bg-secondary">Adopted</span>
+        {% endif %}
+    </div>
+</div>
