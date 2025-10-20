@@ -17,30 +17,38 @@ class PetAPI:
     def __init__(self):
         self.cat_api_key = os.getenv('CAT_API_KEY')
         self.dog_api_key = os.getenv('DOG_API_KEY')
-        self.api_pets_cache = []  # Cache for API pets to keep them consistent
+        self.api_pets_cache = []
+        self.last_api_fetch = None
     
     def get_cats(self, limit=5):
-        """Get real cat data from The Cat API"""
+        """Get real cat data from The Cat API with better error handling"""
         try:
             url = f"https://api.thecatapi.com/v1/images/search?limit={limit}&has_breeds=1"
-            headers = {'x-api-key': self.cat_api_key}
+            headers = {'x-api-key': self.cat_api_key} if self.cat_api_key else {}
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
             
             cats = []
             for i, cat_data in enumerate(response.json()):
                 breed = cat_data.get('breeds', [{}])[0] if cat_data.get('breeds') else {}
-                # Create unique but consistent ID
-                cat_id = f"api_cat_{i+1000}"
+                
+                # Generate consistent ID
+                cat_id = f"api_cat_{hash(cat_data['url']) % 10000}"  # Hash-based ID for consistency
+                
+                # Better name handling
+                name = breed.get('name', 'Beautiful Cat')
+                if name == 'Unknown Cat':
+                    name = 'Lovely Cat'
+                    
                 cats.append({
                     'id': cat_id,
-                    'name': breed.get('name', 'Unknown Cat'),
+                    'name': name,
                     'species': 'Cat',
                     'breed': breed.get('name', 'Mixed Breed'),
                     'age': self._get_random_age(),
                     'gender': self._get_random_gender(),
                     'location': self._get_random_location(),
-                    'description': breed.get('description', 'A lovely cat looking for a home.')[:200] + '...',
+                    'description': breed.get('description', 'A lovely cat looking for a loving home.')[:150] + '...',
                     'image': cat_data['url'],
                     'adopted': False,
                     'source': 'api',
@@ -48,31 +56,39 @@ class PetAPI:
                 })
             return cats
         except Exception as e:
-            print(f"Cat API error: {e}")
-            return []
+            print(f"❌ Cat API error: {e}")
+            # Return fallback cats
+            return self._get_fallback_cats(limit)
     
     def get_dogs(self, limit=5):
-        """Get real dog data from The Dog API"""
+        """Get real dog data from The Dog API with better error handling"""
         try:
             url = f"https://api.thedogapi.com/v1/images/search?limit={limit}&has_breeds=1"
-            headers = {'x-api-key': self.dog_api_key}
+            headers = {'x-api-key': self.dog_api_key} if self.dog_api_key else {}
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
             
             dogs = []
             for i, dog_data in enumerate(response.json()):
                 breed = dog_data.get('breeds', [{}])[0] if dog_data.get('breeds') else {}
-                # Create unique but consistent ID
-                dog_id = f"api_dog_{i+2000}"
+                
+                # Generate consistent ID
+                dog_id = f"api_dog_{hash(dog_data['url']) % 10000}"
+                
+                # Better name handling
+                name = breed.get('name', 'Friendly Dog')
+                if name == 'Unknown Dog':
+                    name = 'Happy Dog'
+                    
                 dogs.append({
                     'id': dog_id,
-                    'name': breed.get('name', 'Unknown Dog'),
+                    'name': name,
                     'species': 'Dog',
                     'breed': breed.get('name', 'Mixed Breed'),
                     'age': self._get_random_age(),
                     'gender': self._get_random_gender(),
                     'location': self._get_random_location(),
-                    'description': breed.get('description', 'A friendly dog looking for a forever home.')[:200] + '...',
+                    'description': breed.get('description', 'A friendly dog waiting for a forever home.')[:150] + '...',
                     'image': dog_data['url'],
                     'adopted': False,
                     'source': 'api',
@@ -80,47 +96,49 @@ class PetAPI:
                 })
             return dogs
         except Exception as e:
-            print(f"Dog API error: {e}")
-            return []
+            print(f"❌ Dog API error: {e}")
+            # Return fallback dogs
+            return self._get_fallback_dogs(limit)
     
-    def _get_random_age(self):
-        ages = ['2 months', '6 months', '1 year', '2 years', '3 years', '4 years', '5 years']
-        return random.choice(ages)
+    def _get_fallback_cats(self, limit=3):
+        """Fallback cat data when API fails"""
+        fallback_cats = [
+            {
+                'id': 'fallback_cat_1',
+                'name': 'Whiskers',
+                'species': 'Cat',
+                'breed': 'Domestic Shorthair',
+                'age': '2 years',
+                'gender': 'Female',
+                'location': 'Local Shelter',
+                'description': 'A sweet and affectionate cat who loves cuddles and playing with toys.',
+                'image': 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=300&fit=crop',
+                'adopted': False,
+                'source': 'fallback',
+                'personality': ['affectionate', 'playful', 'gentle']
+            }
+        ]
+        return fallback_cats[:limit]
     
-    def _get_random_gender(self):
-        return random.choice(['Male', 'Female'])
-    
-    def _get_random_location(self):
-        locations = ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 
-                    'Phoenix, AZ', 'Philadelphia, PA', 'San Antonio, TX', 'San Diego, CA']
-        return random.choice(locations)
-    
-    def _get_cat_personality(self, temperament):
-        if not temperament:
-            return ['affectionate', 'playful']
-        traits = temperament.lower().split(', ')
-        return [trait.strip() for trait in traits if trait.strip()]
-    
-    def _get_dog_personality(self, temperament):
-        if not temperament:
-            return ['friendly', 'loyal']
-        traits = temperament.lower().split(', ')
-        return [trait.strip() for trait in traits if trait.strip()]
-    
-    def get_all_pets(self):
-        """Get both cats and dogs from real APIs - with caching"""
-        # Only fetch from API if cache is empty
-        if not self.api_pets_cache:
-            print("🔄 Fetching fresh data from APIs...")
-            cats = self.get_cats(5)
-            dogs = self.get_dogs(5)
-            self.api_pets_cache = cats + dogs
-            print(f"✅ Cached {len(self.api_pets_cache)} API pets")
-        else:
-            print(f"✅ Using cached {len(self.api_pets_cache)} API pets")
-        
-        return self.api_pets_cache.copy()  # Return a copy to prevent modification
-
+    def _get_fallback_dogs(self, limit=3):
+        """Fallback dog data when API fails"""
+        fallback_dogs = [
+            {
+                'id': 'fallback_dog_1',
+                'name': 'Max',
+                'species': 'Dog',
+                'breed': 'Labrador Mix',
+                'age': '3 years',
+                'gender': 'Male',
+                'location': 'Local Rescue',
+                'description': 'A loyal and energetic companion who loves walks and playing fetch.',
+                'image': 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop',
+                'adopted': False,
+                'source': 'fallback',
+                'personality': ['friendly', 'active', 'loyal']
+            }
+        ]
+        return fallback_dogs[:limit]
 # Initialize the API
 pet_api = PetAPI()
 
@@ -160,36 +178,40 @@ adoption_requests = []
 all_pets_cache = []
 
 def get_all_available_pets():
-    """Get all pets with persistent caching - FIXED VERSION"""
+    """Get all pets with persistent caching - IMPROVED VERSION"""
     global all_pets_cache
     
-    # Always include local_pets and refresh API pets if cache is empty
-    if not all_pets_cache:
-        print("🔄 Initializing pet cache...")
-        try:
-            api_pets = pet_api.get_all_pets()
-            all_pets_cache = local_pets + api_pets
-            print(f"✅ Total pets in cache: {len(all_pets_cache)}")
-            
-            # Print API pets for debugging
-            api_pets_list = [p for p in all_pets_cache if p.get('source') == 'api']
-            print(f"🔍 API Pets: {[p['name'] + ' (ID: ' + str(p['id']) + ')' for p in api_pets_list]}")
-            
-        except Exception as e:
-            print(f"❌ Error fetching pets: {e}")
-            all_pets_cache = local_pets.copy()
-    else:
-        # Always ensure local_pets are included (for newly added pets)
-        current_local_ids = [p['id'] for p in local_pets]
-        current_cache_ids = [p['id'] for p in all_pets_cache]
-        
-        # Add any local pets that are missing from cache
-        for local_pet in local_pets:
-            if local_pet['id'] not in current_cache_ids:
-                all_pets_cache.append(local_pet)
-                print(f"✅ Added missing local pet to cache: {local_pet['name']}")
+    # Always include local_pets
+    all_local_pets = local_pets.copy()
     
-    return [pet for pet in all_pets_cache if not pet.get('adopted', False)]
+    # Get API pets (with fallback)
+    try:
+        api_pets = pet_api.get_all_pets()
+    except Exception as e:
+        print(f"❌ Error getting API pets: {e}")
+        api_pets = []
+    
+    # Combine and ensure unique IDs
+    combined_pets = all_local_pets + api_pets
+    
+    # Remove duplicates by ID
+    seen_ids = set()
+    unique_pets = []
+    for pet in combined_pets:
+        pet_id = str(pet['id'])
+        if pet_id not in seen_ids:
+            seen_ids.add(pet_id)
+            unique_pets.append(pet)
+    
+    # Update cache
+    all_pets_cache = unique_pets
+    
+    print(f"✅ Loaded {len(unique_pets)} pets: {len(all_local_pets)} local + {len(api_pets)} API")
+    
+    # Filter out adopted pets
+    available_pets = [pet for pet in unique_pets if not pet.get('adopted', False)]
+    
+    return available_pets
 
 def find_pet_by_id(pet_id):
     """Find pet by ID in the persistent cache"""
@@ -536,14 +558,15 @@ def debug():
         "favorites": users_favorites,
         "local_pets_list": [{"id": p['id'], "name": p['name']} for p in local_pets]
     })
-
-# Route to clear cache and refresh API data
-@app.route('/refresh-pets')
-def refresh_pets():
+@app.route('/refresh')
+def force_refresh():
+    """Force refresh all pet data"""
     global all_pets_cache
     all_pets_cache = []  # Clear cache
     pet_api.api_pets_cache = []  # Clear API cache
-    flash('Pet data refreshed from APIs!', 'success')
+    
+    available_pets = get_all_available_pets()
+    flash('Pet data refreshed successfully!', 'success')
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

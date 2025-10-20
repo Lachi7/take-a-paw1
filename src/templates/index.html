@@ -29,27 +29,31 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Search Pets</h5>
-                <form action="{{ url_for('search_pets') }}" method="GET" class="row g-3">
-                    <div class="col-md-3">
-                        <select name="species" class="form-select">
-                            <option value="">All Species</option>
-                            <option value="dog">Dogs</option>
-                            <option value="cat">Cats</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" name="breed" class="form-control" placeholder="Breed">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" name="location" class="form-control" placeholder="Location">
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary w-100">Search</button>
-                    </div>
-                </form>
-            </div>
+<div class="card-body">
+    <h5 class="card-title">{{ pet.name }}</h5>
+    <p class="card-text">
+        <strong>{{ pet.species }}</strong> - {{ pet.breed }}<br>
+        <small class="text-muted">
+            {{ pet.age }} • {{ pet.gender }}<br>
+            {{ pet.location }}
+        </small>
+    </p>
+    
+    <!-- DEBUG: Show pet source -->
+    <small class="text-info">
+        Source: {{ pet.source }} | ID: {{ pet.id }}
+    </small>
+    
+    <p class="card-text">{{ pet.description[:100] }}...</p>
+    
+    {% if pet.source == 'api' %}
+    <span class="badge bg-info">🐾 Real Shelter Pet</span>
+    {% elif pet.source == 'local' %}
+    <span class="badge bg-secondary">🏠 Local Rescue</span>
+    {% else %}
+    <span class="badge bg-warning">🔄 Fallback Data</span>
+    {% endif %}
+</div>
         </div>
     </div>
 </div>
