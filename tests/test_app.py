@@ -4,7 +4,7 @@ import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-from app import app, PetAPI
+from app import app, pet_api
 
 @pytest.fixture
 def client():
@@ -18,40 +18,28 @@ def test_index_route(client):
     assert response.status_code == 200
     assert b'Find Your Perfect Pet Companion' in response.data
 
-def test_pet_api_mock_data():
-    """Test PetAPI mock data generation"""
-    pets = PetAPI.mock_petfinder_data()
-    assert len(pets) > 0
-    assert pets[0]['name'] == 'Max'
+def test_pet_api_real_data():
+    """Test PetAPI real data generation"""
+    pets = pet_api.get_all_pets()
+    assert isinstance(pets, list)
 
 def test_breeds_api(client):
     """Test breeds API endpoints"""
-    response = client.get('/api/breeds/dog')
-    assert response.status_code == 200
-    assert response.is_json
-    
-    response = client.get('/api/breeds/cat')
+    response = client.get('/api/pets')
     assert response.status_code == 200
     assert response.is_json
 
 def test_petfinder_api(client):
     """Test PetFinder-like API endpoint"""
-    response = client.get('/api/petfinder/pets')
+    response = client.get('/api/pets')
     assert response.status_code == 200
     assert response.is_json
 
-def test_search_pets(client):
-    """Test pet search functionality"""
-    response = client.get('/search?species=dog')
-    assert response.status_code == 200
-    
-    response = client.get('/search?breed=Golden')
-    assert response.status_code == 200
-
 def test_placeholder_images():
     """Test placeholder image generation"""
-    dog_image = PetAPI.get_placeholder_image('dog', 'Labrador')
-    cat_image = PetAPI.get_placeholder_image('cat', 'Siamese')
+    from app import get_placeholder_image
+    dog_image = get_placeholder_image('dog', 'Labrador')
+    cat_image = get_placeholder_image('cat', 'Siamese')
     
     assert 'unsplash.com' in dog_image
     assert 'unsplash.com' in cat_image
@@ -73,3 +61,18 @@ def test_pet_api_integration():
     # We're just testing that the methods run without errors
     assert isinstance(cats, list)
     assert isinstance(dogs, list)
+
+def test_search_pets(client):
+    """Test pet search functionality"""
+    response = client.get('/search?species=dog')
+    assert response.status_code == 200
+    
+    response = client.get('/search?breed=Golden')
+    assert response.status_code == 200
+
+def test_health_endpoint(client):
+    """Test health check endpoint"""
+    response = client.get('/health')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['status'] == 'healthy'
