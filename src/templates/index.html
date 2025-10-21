@@ -5,16 +5,16 @@
 {% block content %}
 <div class="row">
     <div class="col-12 text-center mb-4">
-        <h1>Find Your Perfect Pet Companion! 🐾</h1>
-        <p class="lead">Browse pets from local shelters and rescue organizations</p>
+        <h1>Swipe to Find Your Perfect Pet! 🐾</h1>
+        <p class="lead">Swipe right to like ❤️, left to pass ❌</p>
     </div>
 </div>
 
 <!-- Quiz Call to Action -->
-<div class="row mb-5">
+<div class="row mb-4">
     <div class="col-12">
         <div class="card bg-primary text-white">
-            <div class="card-body text-center py-5">
+            <div class="card-body text-center py-4">
                 <h2 class="card-title">Not sure which pet is right for you?</h2>
                 <p class="card-text lead mb-4">Take our 2-minute quiz to find your perfect match!</p>
                 <a href="{{ url_for('quiz') }}" class="btn btn-light btn-lg">
@@ -29,92 +29,458 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="card">
-<div class="card-body">
-    <h5 class="card-title">{{ pet.name }}</h5>
-    <p class="card-text">
-        <strong>{{ pet.species }}</strong> - {{ pet.breed }}<br>
-        <small class="text-muted">
-            {{ pet.age }} • {{ pet.gender }}<br>
-            {{ pet.location }}
-        </small>
-    </p>
-    
-    <!-- DEBUG: Show pet source -->
-    <small class="text-info">
-        Source: {{ pet.source }} | ID: {{ pet.id }}
-    </small>
-    
-    <p class="card-text">{{ pet.description[:100] }}...</p>
-    
-    {% if pet.source == 'api' %}
-    <span class="badge bg-info">🐾 Real Shelter Pet</span>
-    {% elif pet.source == 'local' %}
-    <span class="badge bg-secondary">🏠 Local Rescue</span>
-    {% else %}
-    <span class="badge bg-warning">🔄 Fallback Data</span>
-    {% endif %}
-</div>
-        </div>
-    </div>
-</div>
-
-<!-- Pets Grid -->
-<!-- In the pets grid section -->
-<div class="row">
-    {% for pet in pets %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card pet-card h-100">
-            <img src="{{ pet.image }}" class="card-img-top" alt="{{ pet.name }}"
-                 style="height: 250px; object-fit: cover;">
             <div class="card-body">
-                <h5 class="card-title">{{ pet.name }}</h5>
-                <p class="card-text">
-                    <strong>{{ pet.species }}</strong> - {{ pet.breed }}<br>
-                    <small class="text-muted">
-                        {{ pet.age }} • {{ pet.gender }}<br>
-                        {{ pet.location }}
-                    </small>
-                </p>
-                <p class="card-text">{{ pet.description[:100] }}...</p>
-                
-                {% if pet.source == 'api' %}
-                <span class="badge bg-info">🐾 Real Shelter Pet</span>
-                {% else %}
-                <span class="badge bg-secondary">🏠 Local Rescue</span>
-                {% endif %}
+                <h5 class="card-title">Filter Pets</h5>
+                <form action="{{ url_for('search_pets') }}" method="GET" class="row g-3">
+                    <div class="col-md-3">
+                        <select name="species" class="form-select">
+                            <option value="">All Species</option>
+                            <option value="dog">Dogs</option>
+                            <option value="cat">Cats</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="breed" class="form-control" placeholder="Breed">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="location" class="form-control" placeholder="Location">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
             </div>
-<!-- In the pet card footer section -->
-<div class="card-footer">
-    <a href="{{ url_for('pet_detail', pet_id=pet.id|urlencode) }}" class="btn btn-primary btn-sm">View Profile</a>
-    {% if not pet.adopted %}
-        <a href="{{ url_for('adopt_pet_form', pet_id=pet.id|urlencode) }}" class="btn btn-success btn-sm">Adopt Me</a>
-    {% else %}
-        <span class="badge bg-secondary">Adopted</span>
-    {% endif %}
-</div>
         </div>
     </div>
-    {% endfor %}
 </div>
-{% if not pets %}
-<div class="text-center">
-    <h3>No pets found matching your criteria</h3>
-    <p>Try adjusting your search or <a href="{{ url_for('add_pet') }}">add a pet</a> to our local database.</p>
-</div>
-{% endif %}
 
-<!-- Another Quiz Call to Action at the bottom -->
+<!-- Tinder-style Swipe Container -->
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div id="swipe-container" class="position-relative">
+            {% if pets %}
+                <!-- Progress Indicator -->
+                <div class="text-center mb-3">
+                    <small class="text-muted">
+                        <span id="current-pet">1</span> of <span id="total-pets">{{ pets|length }}</span> pets
+                    </small>
+                    <div class="progress mt-1" style="height: 5px;">
+                        <div id="progress-bar" class="progress-bar bg-success" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Swipe Cards -->
+                {% for pet in pets %}
+                <div class="pet-card card shadow-lg border-0" data-pet-id="{{ pet.id }}" style="{% if loop.index > 1 %}display: none;{% endif %}">
+                    <!-- Pet Image -->
+                    <div class="card-img-container position-relative">
+                        <img src="{{ pet.image }}" class="card-img-top pet-image" alt="{{ pet.name }}"
+                             style="height: 400px; object-fit: cover;">
+                        <div class="card-img-overlay d-flex flex-column justify-content-between">
+                            <!-- Pet Info Overlay -->
+                            <div class="top-overlay">
+                                <span class="badge bg-primary fs-6">{{ pet.species }}</span>
+                                {% if pet.source == 'api' %}
+                                <span class="badge bg-info">🐾 Real Shelter</span>
+                                {% else %}
+                                <span class="badge bg-secondary">🏠 Local Rescue</span>
+                                {% endif %}
+                            </div>
+                            <div class="bottom-overlay text-white">
+                                <h3 class="card-title mb-1">{{ pet.name }}</h3>
+                                <p class="card-text mb-1">
+                                    <strong>{{ pet.breed }}</strong> • {{ pet.age }} • {{ pet.gender }}
+                                </p>
+                                <p class="card-text mb-0">
+                                    <i class="fas fa-map-marker-alt"></i> {{ pet.location }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <p class="card-text">{{ pet.description }}</p>
+                        
+                        <!-- Personality Tags -->
+                        {% if pet.personality %}
+                        <div class="personality-tags mb-3">
+                            {% for trait in pet.personality %}
+                            <span class="badge bg-light text-dark me-1 mb-1">{{ trait }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('pet_detail', pet_id=pet.id) }}" class="btn btn-outline-primary">
+                                <i class="fas fa-info-circle me-2"></i>View Full Profile
+                            </a>
+                            {% if not pet.adopted %}
+                                <a href="{{ url_for('adopt_pet_form', pet_id=pet.id) }}" class="btn btn-success">
+                                    <i class="fas fa-home me-2"></i>Adopt {{ pet.name }}
+                                </a>
+                            {% else %}
+                                <span class="badge bg-secondary fs-6 py-2">Already Adopted</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- No More Pets Message -->
+                <div id="no-more-pets" class="card text-center py-5" style="display: none;">
+                    <div class="card-body">
+                        <h3>🎉 That's all for now!</h3>
+                        <p class="lead">You've seen all available pets.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('view_favorites') }}" class="btn btn-primary">
+                                <i class="fas fa-heart me-2"></i>View Your Liked Pets
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-redo me-2"></i>Start Over
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Swipe Buttons -->
+                <div class="swipe-buttons mt-4 text-center">
+                    <button class="btn btn-danger btn-lg swipe-btn me-3" data-action="reject">
+                        <i class="fas fa-times fa-2x"></i><br>
+                        <small>Not for me</small>
+                    </button>
+                    <button class="btn btn-info btn-lg mx-3 view-profile-btn">
+                        <i class="fas fa-eye fa-2x"></i><br>
+                        <small>View Profile</small>
+                    </button>
+                    <button class="btn btn-success btn-lg swipe-btn ms-3" data-action="like">
+                        <i class="fas fa-heart fa-2x"></i><br>
+                        <small>Like</small>
+                    </button>
+                </div>
+
+            {% else %}
+                <!-- No Pets Available -->
+                <div class="card text-center py-5">
+                    <div class="card-body">
+                        <h3>No pets found 😢</h3>
+                        <p class="lead">Try adjusting your search criteria or check back later.</p>
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">Show All Pets</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
 <div class="row mt-5">
     <div class="col-12">
         <div class="card border-primary">
-            <div class="card-body text-center py-4">
-                <h4 class="card-title">Still unsure?</h4>
-                <p class="card-text">Let us help you find the perfect pet for your lifestyle!</p>
-                <a href="{{ url_for('quiz') }}" class="btn btn-outline-primary btn-lg">
-                    <i class="fas fa-magic me-2"></i>Take the Matching Quiz
-                </a>
+            <div class="card-body text-center py-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4 class="text-primary mb-1" id="liked-count">0</h4>
+                        <small class="text-muted">Pets You Liked</small>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-primary mb-1" id="passed-count">0</h4>
+                        <small class="text-muted">Pets You Passed</small>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-primary mb-1" id="remaining-count">{{ pets|length if pets else 0 }}</h4>
+                        <small class="text-muted">Remaining Pets</small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.pet-card {
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    min-height: 600px;
+}
+
+.pet-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-container {
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+}
+
+.top-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+    padding: 15px;
+    margin: -15px;
+}
+
+.bottom-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+    padding: 20px;
+    margin: -20px;
+}
+
+.swipe-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.swipe-btn {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.swipe-btn:hover {
+    transform: scale(1.1);
+}
+
+.view-profile-btn {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.swipe-like {
+    animation: swipeLike 0.5s ease forwards;
+}
+
+.swipe-reject {
+    animation: swipeReject 0.5s ease forwards;
+}
+
+@keyframes swipeLike {
+    0% { transform: translateX(0) rotate(0); opacity: 1; }
+    100% { transform: translateX(100px) rotate(20deg); opacity: 0; }
+}
+
+@keyframes swipeReject {
+    0% { transform: translateX(0) rotate(0); opacity: 1; }
+    100% { transform: translateX(-100px) rotate(-20deg); opacity: 0; }
+}
+
+.personality-tags {
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .swipe-buttons {
+        gap: 10px;
+    }
+    
+    .swipe-btn {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .view-profile-btn {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .pet-image {
+        height: 350px !important;
+    }
+}
+
+.swipe-like, .swipe-reject {
+    pointer-events: none;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+class PetSwiper {
+    constructor() {
+        this.pets = Array.from(document.querySelectorAll('.pet-card'));
+        this.currentIndex = 0;
+        this.likedPets = JSON.parse(localStorage.getItem('likedPets') || '[]');
+        this.passedPets = JSON.parse(localStorage.getItem('passedPets') || '[]');
+        
+        this.init();
+    }
+
+    init() {
+        this.updateCounters();
+        this.updateProgress();
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        // Swipe buttons
+        document.querySelectorAll('.swipe-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = e.currentTarget.getAttribute('data-action');
+                this.handleSwipe(action);
+            });
+        });
+
+        // View profile button
+        document.querySelector('.view-profile-btn').addEventListener('click', () => {
+            this.viewCurrentProfile();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') this.handleSwipe('reject');
+            if (e.key === 'ArrowRight') this.handleSwipe('like');
+            if (e.key === ' ') this.viewCurrentProfile(); // Space bar for profile
+        });
+
+        // Touch swipe for mobile
+        this.setupTouchEvents();
+    }
+
+    setupTouchEvents() {
+        let startX = 0;
+        const card = this.getCurrentCard();
+
+        if (card) {
+            card.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+
+            card.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].clientX;
+                const diff = endX - startX;
+
+                if (Math.abs(diff) > 50) { // Minimum swipe distance
+                    if (diff > 0) {
+                        this.handleSwipe('like');
+                    } else {
+                        this.handleSwipe('reject');
+                    }
+                }
+            });
+        }
+    }
+
+    handleSwipe(action) {
+        const currentCard = this.getCurrentCard();
+        if (!currentCard) return;
+
+        const petId = currentCard.getAttribute('data-pet-id');
+
+        // Add animation
+        currentCard.classList.add(action === 'like' ? 'swipe-like' : 'swipe-reject');
+
+        // Update lists
+        if (action === 'like') {
+            this.likedPets.push(petId);
+            this.saveToFavorites(petId);
+        } else {
+            this.passedPets.push(petId);
+        }
+
+        // Save to localStorage
+        localStorage.setItem('likedPets', JSON.stringify(this.likedPets));
+        localStorage.setItem('passedPets', JSON.stringify(this.passedPets));
+
+        // Move to next card after animation
+        setTimeout(() => {
+            this.nextCard();
+        }, 500);
+    }
+
+    async saveToFavorites(petId) {
+        try {
+            const response = await fetch(`/favorite/${petId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const data = await response.json();
+            console.log('Favorite saved:', data);
+        } catch (error) {
+            console.error('Error saving favorite:', error);
+        }
+    }
+
+    viewCurrentProfile() {
+        const currentCard = this.getCurrentCard();
+        if (currentCard) {
+            const petId = currentCard.getAttribute('data-pet-id');
+            window.location.href = `/pet/${petId}`;
+        }
+    }
+
+    nextCard() {
+        this.currentIndex++;
+        this.updateProgress();
+        this.updateCounters();
+
+        if (this.currentIndex >= this.pets.length) {
+            this.showNoMorePets();
+        } else {
+            this.showCurrentCard();
+        }
+    }
+
+    showCurrentCard() {
+        // Hide all cards
+        this.pets.forEach(card => card.style.display = 'none');
+        
+        // Show current card
+        const currentCard = this.getCurrentCard();
+        if (currentCard) {
+            currentCard.style.display = 'block';
+            this.setupTouchEvents(); // Re-bind touch events for new card
+        }
+    }
+
+    showNoMorePets() {
+        document.querySelectorAll('.pet-card').forEach(card => card.style.display = 'none');
+        document.getElementById('no-more-pets').style.display = 'block';
+        document.querySelector('.swipe-buttons').style.display = 'none';
+    }
+
+    getCurrentCard() {
+        return this.pets[this.currentIndex];
+    }
+
+    updateProgress() {
+        const progress = ((this.currentIndex + 1) / this.pets.length) * 100;
+        document.getElementById('progress-bar').style.width = `${progress}%`;
+        document.getElementById('current-pet').textContent = this.currentIndex + 1;
+    }
+
+    updateCounters() {
+        document.getElementById('liked-count').textContent = this.likedPets.length;
+        document.getElementById('passed-count').textContent = this.passedPets.length;
+        document.getElementById('remaining-count').textContent = Math.max(0, this.pets.length - this.currentIndex - 1);
+    }
+}
+
+// Initialize swiper when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('.pet-card')) {
+        new PetSwiper();
+    }
+});
+</script>
 {% endblock %}

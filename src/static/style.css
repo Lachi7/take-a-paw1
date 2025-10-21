@@ -34,3 +34,38 @@ body {
 footer {
     margin-top: auto;
 }
+/* Add to your existing style.css */
+.swipe-container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.pet-card {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+@media (max-width: 768px) {
+    .swipe-buttons {
+        gap: 10px;
+    }
+    
+    .swipe-btn {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .view-profile-btn {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .pet-image {
+        height: 350px !important;
+    }
+}
+
+/* Swipe animations */
+.swipe-like, .swipe-reject {
+    pointer-events: none;
+}

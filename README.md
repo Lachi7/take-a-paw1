@@ -71,7 +71,7 @@ A modern, full-stack pet adoption platform that connects loving families with re
 
 2. **Virtual Environment**
    ```bash
-   python -m venv .venv
+   python3 -m venv .venv
    source .venv/bin/activate  # Linux/Mac
    # OR
    .venv\Scripts\activate    # Windows
