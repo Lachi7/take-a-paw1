@@ -16,7 +16,8 @@ def test_index_route(client):
     """Test the home page returns successfully"""
     response = client.get('/')
     assert response.status_code == 200
-    assert b'Find Your Perfect Pet Companion' in response.data
+    # Updated to match the new Tinder-style homepage text
+    assert b'Swipe to Find Your Perfect Pet' in response.data
 
 def test_pet_detail_route(client):
     """Test individual pet page"""
@@ -115,3 +116,9 @@ def test_quiz_results_post(client):
         'family_situation': 'alone'
     })
     assert response.status_code == 200
+
+def test_search_results_page(client):
+    """Test search results page displays correctly"""
+    response = client.get('/search?species=cat')
+    assert response.status_code == 200
+    assert b'Search Results' in response.data
