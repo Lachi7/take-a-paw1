@@ -5,10 +5,14 @@ import urllib.parse
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for, flash
 from datetime import datetime
 from dotenv import load_dotenv
+from time import monotonic
 
 load_dotenv()
 
 app = Flask(__name__)
+APP_START_MONO = monotonic()
+APP_START_ISO = datetime.now().isoformat()
+APP_VERSION = os.getenv("APP_VERSION", "0.1.0")
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key')
 
 print("🚀 Take A Paw application starting...")
@@ -146,6 +150,10 @@ class PetAPI:
             print(f"✅ Using cached {len(self.api_pets_cache)} API pets")
         
         return self.api_pets_cache.copy()  # Return a copy to prevent modification
+    
+    def _uptime_seconds() -> float:
+        return round(monotonic() - APP_START_MONO, 2)
+
 
 # Initialize the API 
 pet_api = PetAPI()
@@ -571,6 +579,34 @@ def refresh_pets():
     pet_api.api_pets_cache = []  # Clear API cache
     flash('Pet data refreshed from APIs!', 'success')
     return redirect(url_for('index'))
+def _health_view():
+    available_pets = get_all_available_pets()
+    total = len(available_pets)
+    local_count = sum(1 for p in available_pets if p.get('source') == 'local')
+    api_count  = sum(1 for p in available_pets if p.get('source') == 'api')
+    return jsonify({
+        "status": "ok",
+        "service": "take-a-paw",
+        "time": datetime.now().isoformat(),
+        "caches": {
+            "all_pets_cache_size": len(all_pets_cache),
+            "api_pets_cache_size": len(pet_api.api_pets_cache)
+        },
+        "pets": {
+            "total_available": total,
+            "local_available": local_count,
+            "api_available": api_count
+        }
+    }), 200
+
+# Decorator registration
+@app.route("/api/health", methods=["GET"])
+def api_health():
+    return _health_view()
+
+# Explicit add_url_rule registration (works even if decorators got skipped earlier)
+app.add_url_rule("/api/health", endpoint="api_health_alt", view_func=_health_view, methods=["GET"])
+
 
 # Error handlers
 @app.errorhandler(404)
