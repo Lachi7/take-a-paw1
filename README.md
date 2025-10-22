@@ -29,13 +29,10 @@ A modern, full-stack pet adoption platform that connects loving families with re
 ## 🚀 Live Deployment
 
 ### 🌐 Production Environment
-**Live Application:** [https://takeapaw.onrender.com](https://takeapaw.onrender.com)  
-**Health Monitor:** [https://takeapaw.onrender.com/health](https://takeapaw.onrender.com/health)  
-**API Status:** [https://takeapaw.onrender.com/api/status](https://takeapaw.onrender.com/api/status)
+**Live Application:** [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)  
+**Health Monitor:** [https://take-a-paw.onrender.com/health](https://take-a-paw.onrender.com/health)  
+**API Status:** [https://take-a-paw.onrender.com/api/status](https://take-a-paw.onrender.com/api/status)
 
-### 📊 CI/CD Pipeline Status
-![CI Pipeline](https://github.com/your-username/takeapaw/actions/workflows/ci.yml/badge.svg)
-![CD Pipeline](https://github.com/your-username/takeapaw/actions/workflows/cd.yml/badge.svg)
 
 ## 🏗️ Architecture
 
@@ -58,7 +55,7 @@ A modern, full-stack pet adoption platform that connects loving families with re
 
 ### Prerequisites
 - Python 3.12+
-- Docker (optional)
+- Docker
 - Git
 
 ### Local Development
