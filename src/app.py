@@ -523,6 +523,13 @@ def admin_adoptions():
     session['is_admin'] = True
     return render_template('admin_adoptions.html', adoption_requests=adoption_requests)
 
+@app.route('/admin.html')
+def admin_page():
+    session['is_admin'] = True  
+    return render_template('admin.html')
+
+
+
 # API endpoints
 @app.route('/api/status')
 def api_status():

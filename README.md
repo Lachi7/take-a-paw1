@@ -29,7 +29,7 @@ A modern, full-stack pet adoption platform that connects loving families with re
 ## 🚀 Live Deployment
 
 ### 🌐 Production Environment
-**Live Application:** [https://takeapaw.onrender.com](https://takeapaw.onrender.com)  
+**Live Application:** [https://take-a-paw.onrender.com](https://takeapaw.onrender.com)  
 
 ## 🏗️ Architecture
 
