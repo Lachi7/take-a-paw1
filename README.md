@@ -74,7 +74,7 @@ A modern, full-stack pet adoption platform that connects loving families with re
    python3 -m venv .venv
    source .venv/bin/activate  # Linux/Mac
    # OR
-   .venv\Scripts\activate    # Windows
+   .venv\Scripts\Activate.ps1   # Windows using powershel
    ```
 
 3. **Install Dependencies**

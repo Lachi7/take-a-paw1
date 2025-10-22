@@ -2,7 +2,7 @@ import os
 import requests
 import random
 import urllib.parse
-from flask import Flask, render_template, jsonify, request, session, redirect, url_for, flash
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for, flash, send_from_directory
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -549,6 +549,26 @@ def api_pets():
 @app.route('/test')
 def test():
     return jsonify({"status": "success", "message": "Take A Paw is working! 🐾"})
+
+# Add these routes to your app.py if you want the original tests to pass
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint"""
+    return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()})
+
+@app.route('/debug/pets-detailed')
+def debug_pets_detailed():
+    """Detailed debug endpoint for pets"""
+    available_pets = get_all_available_pets()
+    return jsonify({
+        "total_pets": len(available_pets),
+        "pets": available_pets,
+        "cache_info": {
+            "total_cached": len(all_pets_cache),
+            "api_pets_cached": len(pet_api.api_pets_cache)
+        }
+    })
 
 # Debug route
 @app.route('/debug')
