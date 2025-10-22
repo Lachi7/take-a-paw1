@@ -13,7 +13,7 @@ app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key')
 
 print("🚀 Take A Paw application starting...")
 
-class PetAPI:
+class PetAPI: 
     def __init__(self):
         self.cat_api_key = os.getenv('CAT_API_KEY')
         self.dog_api_key = os.getenv('DOG_API_KEY')
@@ -147,11 +147,11 @@ class PetAPI:
         
         return self.api_pets_cache.copy()  # Return a copy to prevent modification
 
-# Initialize the API
+# Initialize the API 
 pet_api = PetAPI()
 
 # Your existing local pets data
-local_pets = [
+local_pets = [ 
     {
         'id': 101, 'name': 'Buddy', 'species': 'Dog', 'breed': 'Golden Retriever', 
         'age': '2 years', 'gender': 'Male', 'location': 'Hope Animal Shelter, New York, NY',
