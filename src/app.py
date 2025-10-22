@@ -600,7 +600,7 @@ def _health_view():
     }), 200
 
 # Decorator registration
-@app.route("/api/health", methods=["GET"])
+@app.route("/health", methods=["GET"])
 def api_health():
     return _health_view()
 

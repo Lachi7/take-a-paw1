@@ -29,7 +29,7 @@ A modern, full-stack pet adoption platform that connects loving families with re
 ## 🚀 Live Deployment
 
 ### 🌐 Production Environment
-**Live Application:** [https://takeapaw.onrender.com](https://takeapaw.onrender.com)  
+**Live Application:** [https://take-a-paw.onrender.com](https://takeapaw.onrender.com)  
 
 ## 🏗️ Architecture
 
@@ -68,7 +68,7 @@ A modern, full-stack pet adoption platform that connects loving families with re
    python3 -m venv .venv
    source .venv/bin/activate  # Linux/Mac
    # OR
-   .venv\Scripts\activate    # Windows
+   .venv\Scripts\Activate.ps1   # Windows using powershell
    ```
 
 3. **Install Dependencies**
