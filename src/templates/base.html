@@ -12,7 +12,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container" style="background-color: burlywood;">
+        <div class="container" >
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Take A Paw" width="30" height="30" class="d-inline-block align-text-top me-2">Take A Paw
             </a>
@@ -41,6 +41,10 @@
                             <i class="fas fa-heart me-1"></i>My Favorites
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">
+                            <i class="fas fa-info-circle me-1"></i>About Us
+                        </a>
                 </ul>
                 
                 <!-- Admin Section (visible when admin is logged in) -->
