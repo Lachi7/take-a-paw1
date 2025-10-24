@@ -72,7 +72,7 @@ class PetAPI:
                     'age': self._get_realistic_age('dog'),
                     'gender': self._get_realistic_gender(),
                     'location': self._get_shelter_location(),
-                    'description': breed.get('description', 'A friendly dog looking for a forever home.')[:200] + '...',
+                    'description': breed.get('description', 'A friendly dog looking for a forever  home.')[:200] + '...',
                     'image': dog_data['url'],
                     'adopted': False,
                     'source': 'api',
@@ -89,7 +89,7 @@ class PetAPI:
         dog_names = ['Buddy', 'Max', 'Charlie', 'Cooper', 'Jack', 'Bear', 'Duke', 'Tucker', 'Rocky', 'Bailey']
         
         if species == 'cat':
-            return random.choice(cat_names)
+            return random.choice(cat_names)+ " the Cat"
         else:
             return random.choice(dog_names)
     
