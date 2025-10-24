@@ -306,7 +306,7 @@ def submit_adoption(pet_id):
     # Collect adoption data - STORE ALL PET INFO
     adoption_data = {
         'pet_id': str(pet['id']),
-        'pet_name': pet['name']+,
+        'pet_name': pet['name'],
         'pet_species': pet['species'],
         'pet_breed': pet['breed'],
         'pet_age': pet['age'],
