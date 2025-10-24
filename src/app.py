@@ -199,7 +199,7 @@ def get_all_available_pets():
             
             # Print API pets for debugging
             api_pets_list = [p for p in all_pets_cache if p.get('source') == 'api']
-            print(f"🔍 API Pets: {"testing"+[p['name'] + ' (ID: ' + str(p['id']) + ')' for p in api_pets_list]}")
+            print(f"🔍 API Pets: smileeeee {[p['name'] + ' (ID: ' + str(p['id']) + ')' for p in api_pets_list]}")
             
         except Exception as e:
             print(f"❌ Error fetching pets: {e}")
@@ -306,7 +306,7 @@ def submit_adoption(pet_id):
     # Collect adoption data - STORE ALL PET INFO
     adoption_data = {
         'pet_id': str(pet['id']),
-        'pet_name': pet['name'],
+        'pet_name': pet['name']+,
         'pet_species': pet['species'],
         'pet_breed': pet['breed'],
         'pet_age': pet['age'],
