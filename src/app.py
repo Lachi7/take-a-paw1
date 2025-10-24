@@ -89,7 +89,7 @@ class PetAPI:
         dog_names = ['Buddy', 'Max', 'Charlie', 'Cooper', 'Jack', 'Bear', 'Duke', 'Tucker', 'Rocky', 'Bailey']
         
         if species == 'cat':
-            return random.choice(cat_names)+"urey"
+            return random.choice(cat_names)
         else:
             return random.choice(dog_names)
     
