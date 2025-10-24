@@ -34,7 +34,7 @@ class PetAPI:
                 cat_id = f"api_cat_{i+1000}"
                 cats.append({
                     'id': cat_id,
-                    'name': self._generate_pet_name(breed.get('name'), 'cat'),
+                    'name': self._generate_pet_name(breed.get('name'), 'cat')+ " the Cat",
                     'species': 'Cat',
                     'breed': breed.get('name', 'Mixed Breed'),
                     'age': self._get_realistic_age('cat'),
@@ -89,7 +89,7 @@ class PetAPI:
         dog_names = ['Buddy', 'Max', 'Charlie', 'Cooper', 'Jack', 'Bear', 'Duke', 'Tucker', 'Rocky', 'Bailey']
         
         if species == 'cat':
-            return random.choice(cat_names)+ " the Cat"
+            return random.choice(cat_names)
         else:
             return random.choice(dog_names)
     
