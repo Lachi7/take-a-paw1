@@ -89,7 +89,7 @@ class PetAPI:
         dog_names = ['Buddy', 'Max', 'Charlie', 'Cooper', 'Jack', 'Bear', 'Duke', 'Tucker', 'Rocky', 'Bailey']
         
         if species == 'cat':
-            return random.choice(cat_names)
+            return random.choice(cat_names)+"urey"
         else:
             return random.choice(dog_names)
     
@@ -199,7 +199,7 @@ def get_all_available_pets():
             
             # Print API pets for debugging
             api_pets_list = [p for p in all_pets_cache if p.get('source') == 'api']
-            print(f"🔍 API Pets: smileeeee {[p['name'] + ' (ID: ' + str(p['id']) + ')' for p in api_pets_list]}")
+            print(f"🔍 API Pets: {[p['name'] + ' (ID: ' + str(p['id']) + ')' for p in api_pets_list]}")
             
         except Exception as e:
             print(f"❌ Error fetching pets: {e}")
