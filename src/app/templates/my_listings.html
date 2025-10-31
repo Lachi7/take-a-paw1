@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}My Listings — Take A Paw{% endblock %}
+
+{% block content %}
+<h2>My Listings</h2>
+{% if pets %}
+  <section class="pet-list">
+    {% for pet in pets %}
+      <div class="pet-card">
+        <img src="{{ pet.image }}" alt="{{ pet.name }}" />
+        <div class="pet-info">
+          <h2>{{ pet.name }}</h2>
+          <p class="species">{{ pet.species }} — {{ pet.breed }}</p>
+          <p class="meta">{{ pet.age }} • {{ pet.gender }}</p>
+          <p class="location">{{ pet.location }}</p>
+          {% if pet.adopted %}
+            <span class="badge adopted">Adopted</span>
+          {% endif %}
+          <a class="btn" href="/pet/{{ pet.id }}">View</a>
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+{% else %}
+  <p>You haven’t listed any pets yet.</p>
+  <p><a class="btn" href="/add-pet">Add your first listing</a></p>
+{% endif %}
+{% endblock %}
