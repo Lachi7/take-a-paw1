@@ -1,23 +1,215 @@
 {% extends "base.html" %}
-{% block title %}Available Pets — Take A Paw{% endblock %}
+{% block title %}Swipe Pets — Take A Paw{% endblock %}
 
 {% block content %}
-<section class="pet-list">
-  {% if pets %}
-    {% for pet in pets %}
-    <div class="pet-card">
-      <img src="{{ pet.image }}" alt="{{ pet.name }}" />
-      <div class="pet-info">
-        <h2>{{ pet.name }}</h2>
-        <p class="species">{{ pet.species }} — {{ pet.breed }}</p>
-        <p class="meta">{{ pet.age }} • {{ pet.gender }}</p>
-        <p class="location">{{ pet.location }}</p>
-        <a class="btn" href="/pet/{{ pet.id }}">View Details</a>
+<div class="swipe-section">
+  <p class="swipe-progress" id="progress">Swipe left for No, right for Yes</p>
+
+  <div class="swipe-interface" id="swipeContainer">
+    {% if pets %}
+      {% for pet in pets %}
+      <div class="swipe-card" data-pet-id="{{ pet.id }}" data-index="{{ loop.index0 }}">
+        <img src="{{ pet.image }}" alt="{{ pet.name }}" />
+        <div class="swipe-card-content">
+          <div>
+            <h2>{{ pet.name }}</h2>
+            <p class="species">{{ pet.species }} — {{ pet.breed }}</p>
+            <p class="meta">{{ pet.age }} • {{ pet.gender }} • 📍 {{ pet.location }}</p>
+          </div>
+          <a href="/pet/{{ pet.id }}" class="btn outline">View Details</a>
+        </div>
+        <div class="decision-overlay yes-overlay">LIKE</div>
+        <div class="decision-overlay no-overlay">NOPE</div>
       </div>
-    </div>
-    {% endfor %}
-  {% else %}
-    <p>No pets available right now. Check back soon!</p>
+      {% endfor %}
+    {% else %}
+      <div class="swipe-empty">
+        <h2>No pets available right now</h2>
+        <p>Check back soon for new pets!</p>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if pets %}
+  <div class="swipe-actions">
+    <button class="swipe-btn swipe-no" onclick="swipeNo()">✕</button>
+    <button class="swipe-btn swipe-yes" onclick="swipeYes()">♥</button>
+  </div>
   {% endif %}
-</section>
+</div>
+
+<script>
+// Swipe functionality
+let currentIndex = 0;
+let startX = 0;
+let currentX = 0;
+let isSwiping = false;
+let currentCard = null;
+
+function initializeSwipe() {
+  const cards = document.querySelectorAll('.swipe-card');
+  if (cards.length > 0) {
+    currentCard = cards[0];
+    currentCard.classList.add('active');
+    updateProgress();
+    
+    setupCardEvents(currentCard);
+  }
+}
+
+function setupCardEvents(card) {
+  card.addEventListener('touchstart', handleTouchStart);
+  card.addEventListener('touchmove', handleTouchMove);
+  card.addEventListener('touchend', handleTouchEnd);
+  
+  card.addEventListener('mousedown', handleMouseStart);
+}
+
+function handleTouchStart(e) {
+  startX = e.touches[0].clientX;
+  isSwiping = true;
+  currentCard.style.transition = 'none';
+}
+
+function handleTouchMove(e) {
+  if (!isSwiping) return;
+  e.preventDefault();
+  currentX = e.touches[0].clientX;
+  updateCardPosition();
+}
+
+function handleTouchEnd() {
+  if (!isSwiping) return;
+  isSwiping = false;
+  handleSwipeEnd();
+}
+
+function handleMouseStart(e) {
+  startX = e.clientX;
+  isSwiping = true;
+  currentCard.style.transition = 'none';
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseEnd);
+}
+
+function handleMouseMove(e) {
+  if (!isSwiping) return;
+  currentX = e.clientX;
+  updateCardPosition();
+}
+
+function handleMouseEnd() {
+  if (!isSwiping) return;
+  isSwiping = false;
+  document.removeEventListener('mousemove', handleMouseMove);
+  document.removeEventListener('mouseup', handleMouseEnd);
+  handleSwipeEnd();
+}
+
+function updateCardPosition() {
+  const diff = currentX - startX;
+  const rotation = diff * 0.1;
+  
+  currentCard.style.transform = `translateX(${diff}px) rotate(${rotation}deg)`;
+  
+  const yesOverlay = currentCard.querySelector('.yes-overlay');
+  const noOverlay = currentCard.querySelector('.no-overlay');
+  
+  if (diff > 50) {
+    yesOverlay.style.opacity = Math.min(Math.abs(diff) / 100, 1);
+    noOverlay.style.opacity = '0';
+  } else if (diff < -50) {
+    noOverlay.style.opacity = Math.min(Math.abs(diff) / 100, 1);
+    yesOverlay.style.opacity = '0';
+  } else {
+    yesOverlay.style.opacity = '0';
+    noOverlay.style.opacity = '0';
+  }
+}
+
+function handleSwipeEnd() {
+  const diff = currentX - startX;
+  currentCard.style.transition = 'transform 0.3s ease';
+  
+  if (diff > 100) {
+    swipeCard('yes');
+  } else if (diff < -100) {
+    swipeCard('no');
+  } else {
+    currentCard.style.transform = 'translateX(0) rotate(0)';
+    currentCard.querySelector('.yes-overlay').style.opacity = '0';
+    currentCard.querySelector('.no-overlay').style.opacity = '0';
+  }
+}
+
+function swipeCard(decision) {
+  const yesOverlay = currentCard.querySelector('.yes-overlay');
+  const noOverlay = currentCard.querySelector('.no-overlay');
+  
+  if (decision === 'yes') {
+    yesOverlay.style.opacity = '1';
+  } else {
+    noOverlay.style.opacity = '1';
+  }
+  
+  const direction = decision === 'yes' ? 100 : -100;
+  currentCard.style.transform = `translateX(${direction}vw) rotate(${direction * 0.2}deg)`;
+  currentCard.style.opacity = '0';
+  
+  sendDecision(currentCard.dataset.petId, decision);
+  
+  setTimeout(() => {
+    currentIndex++;
+    const cards = document.querySelectorAll('.swipe-card');
+    
+    if (currentIndex < cards.length) {
+      currentCard.classList.remove('active');
+      currentCard = cards[currentIndex];
+      currentCard.classList.add('active');
+      setupCardEvents(currentCard);
+      updateProgress();
+    } else {
+      document.getElementById('swipeContainer').innerHTML = `
+        <div class="swipe-empty">
+          <h2>That's all for now!</h2>
+          <p>You've seen all available pets. Check back later for new arrivals.</p>
+          <a href="/" class="btn">Refresh</a>
+        </div>
+      `;
+      document.querySelector('.swipe-actions').style.display = 'none';
+    }
+  }, 300);
+}
+
+function swipeYes() {
+  if (currentCard) {
+    swipeCard('yes');
+  }
+}
+
+function swipeNo() {
+  if (currentCard) {
+    swipeCard('no');
+  }
+}
+
+function updateProgress() {
+  const cards = document.querySelectorAll('.swipe-card');
+  document.getElementById('progress').textContent = 
+    `${currentIndex + 1} of ${cards.length}`;
+}
+
+function sendDecision(petId, decision) {
+  if (decision === 'yes') {
+    fetch(`/pets/${petId}/favorite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `next=${encodeURIComponent('/')}`
+    }).catch(err => console.log('Favorite action failed:', err));
+  }
+}
+document.addEventListener('DOMContentLoaded', initializeSwipe);
+</script>
 {% endblock %}

@@ -198,6 +198,7 @@ def home_index():
     return render_template("index.html", pets=pets)
 
 
+
 @bp.get("/search")
 def home_search():
     species  = (request.args.get("species")  or "").strip()
@@ -234,3 +235,8 @@ def add_pet_form():
         flash("Please log in to add a pet.")
         return redirect(url_for("pets.home_index"))
     return render_template("add_pet.html")
+
+@bp.get("/swipe")
+def swipe_pets():
+    pets = Pet.query.filter_by(adopted=False).order_by(Pet.created_at.desc()).all()
+    return render_template("swipe.html", pets=[serialize_pet(p) for p in pets])

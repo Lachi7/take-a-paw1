@@ -32,6 +32,13 @@ class Pet(db.Model):
     contact_email_override = db.Column(db.String(120), nullable=True)
     contact_phone_override = db.Column(db.String(50), nullable=True)
 
+    #for quiz
+    home_type = db.Column(db.String(50), nullable=True)
+    activity_level = db.Column(db.String(50), nullable=True)
+    experience = db.Column(db.String(50), nullable=True)
+    time_commitment = db.Column(db.String(50), nullable=True)
+    family_situation = db.Column(db.String(50), nullable=True)
+    
     # Final toggle at the listing level
     public_contact = db.Column(db.Boolean, default=True, nullable=False)
 
