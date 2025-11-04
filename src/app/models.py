@@ -1,5 +1,5 @@
 # app/models.py
-from datetime import datetime
+from datetime import datetime,timezone
 from .db import db
 
 class User(db.Model):
@@ -9,7 +9,7 @@ class User(db.Model):
     email = db.Column(db.String(120), nullable=True)
     phone = db.Column(db.String(50), nullable=True)
     public_contact = db.Column(db.Boolean, default=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     pets = db.relationship("Pet", backref="owner", lazy=True)
 
@@ -42,13 +42,13 @@ class Pet(db.Model):
     # Final toggle at the listing level
     public_contact = db.Column(db.Boolean, default=True, nullable=False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 class Favorite(db.Model):
     __tablename__ = "favorites"
     user_id = db.Column(db.String(64), db.ForeignKey("users.id"), primary_key=True)
     pet_id  = db.Column(db.Integer, db.ForeignKey("pets.id"), primary_key=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     user = db.relationship("User", lazy=True)
     pet  = db.relationship("Pet",  lazy=True)

@@ -146,21 +146,38 @@ def toggle_favorite(pet_id: int):
         flash("Please log in to use favorites.", "error")
         return redirect(url_for("auth.login_form", next=request.path))
 
+    user = User.query.get(user_id)
+    if not user:
+        # basic user record
+        user = User(id=user_id, display_name=user_id)
+        db.session.add(user)
+        db.session.commit()
+        flash(f"Welcome, {user_id}! Your profile has been created.", "success")
+
     pet = Pet.query.get(pet_id)
     if not pet or pet.adopted:
-        flash("Pet not found.", "error")
+        flash("Pet not found or already adopted.", "error")
         next_url = request.form.get("next") or url_for("pets.home_index")
         return redirect(next_url)
 
     fav = Favorite.query.filter_by(user_id=user_id, pet_id=pet_id).first()
+    
     if fav:
+        # Remove from favorites
         db.session.delete(fav)
-        db.session.commit()
-        flash("Removed from favorites.", "success")
+        action = "removed from"
     else:
+        # Add to favorites
         db.session.add(Favorite(user_id=user_id, pet_id=pet_id))
+        action = "added to"
+    
+    try:
         db.session.commit()
-        flash("Added to favorites.", "success")
+        flash(f"Pet {action} favorites.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("Error updating favorites. Please try again.", "error")
+        print(f"Favorite error: {e}")
 
     next_url = request.form.get("next") or request.headers.get("Referer") or url_for("pets.home_index")
     return redirect(next_url)
@@ -235,8 +252,3 @@ def add_pet_form():
         flash("Please log in to add a pet.")
         return redirect(url_for("pets.home_index"))
     return render_template("add_pet.html")
-
-@bp.get("/swipe")
-def swipe_pets():
-    pets = Pet.query.filter_by(adopted=False).order_by(Pet.created_at.desc()).all()
-    return render_template("swipe.html", pets=[serialize_pet(p) for p in pets])

@@ -17,3 +17,5 @@ flask-sqlalchemy==3.1.1
 sqlalchemy==2.0.36
 flask-migrate==4.0.7
 psycopg2-binary==2.9.9
+alembic==1.12.0
+
