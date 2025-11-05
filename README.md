@@ -29,7 +29,7 @@ A Tinder-style pet adoption web application built with Flask, PostgreSQL, and mo
 **API Status:** [https://take-a-paw.onrender.com/api/status](https://take-a-paw.onrender.com/api/status)
 
 =======
-**Live Application:** [https://take-a-paw.onrender.com](https://takeapaw.onrender.com)  
+**Live Application:** [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)  
 >>>>>>> refactor/modular-backend
 
 ## 🏗️ Architecture
