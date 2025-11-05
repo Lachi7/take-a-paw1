@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: takeapaw
+    env: python
+    plan: free
+    region: frankfurt
+    buildCommand: |
+      pip install -r requirements.txt
+      cd src && python seed.py
+    startCommand: cd src && gunicorn run:app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: takeapaw-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+    healthCheckPath: /health
+    autoDeploy: true

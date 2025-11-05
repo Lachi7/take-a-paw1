@@ -17,3 +17,4 @@ def admin_dashboard_json():
 def admin_adoptions_json():
     # Adoption flow deferred by design; return empty list for now.
     return jsonify({"ok": True, "adoptions": []})
+    

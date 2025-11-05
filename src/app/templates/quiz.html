@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz — Take A Paw{% endblock %}
+
+{% block content %}
+  <style>
+    .quiz-container {
+      max-width: 800px; 
+      margin: 0 auto;
+    }
+#result ul {
+    list-style-type: none;  
+    padding-left: 0;        
+}
+
+#result ul li {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#result ul li strong {
+    font-size: 1.2rem;
+    color: var(--accent);
+}
+
+#result ul li span {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+    .quiz-form {
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    select,
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background-color: #fff;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #5e31d5;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      margin-top: 1.5rem;
+    }
+
+    #result {
+      margin-top: 1.5rem;
+    }
+
+    .form-group label {
+      font-weight: 600;
+    }
+    select option:disabled {
+       color: #888; 
+       font-style: italic;
+    }
+
+  </style>
+
+  <div class="quiz-container">
+    <h1>Find Your Perfect Pet</h1>
+    <p>Answer a few questions to help us recommend the best pet for you!</p>
+
+    <form id="quizForm" class="quiz-form mt-4">
+      <div class="form-group">
+        <label for="homeType">What type of home do you have?</label>
+        <select id="homeType" required>
+          <option value="" disabled selected>Select Home Type</option>  
+          <option value="apartment">Apartment</option>
+          <option value="house">House</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="activityLevel">What is your activity level?</label>
+        <select id="activityLevel" required>
+          <option value="" disabled selected>Select Activity Level</option>  
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="experience">Do you have any experience with pets?</label>
+        <select id="experience" required>
+          <option value="" disabled selected>Select Experience Level</option>  
+          <option value="none">None</option>
+          <option value="some">Some</option>
+          <option value="a_lot">A lot</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="timeCommitment">How much time can you commit to your pet?</label>
+        <select id="timeCommitment" required>
+          <option value="" disabled selected>Select Time Commitment</option>  
+          <option value="less_than_1_hour">Less than 1 hour per day</option>
+          <option value="1_3_hours">1-3 hours per day</option>
+          <option value="more_than_3_hours">More than 3 hours per day</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="familySituation">Do you have children or other pets?</label>
+        <select id="familySituation" required>
+          <option value="" disabled selected>Select Family Situation</option>  
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="result" class="mt-4"></div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $('#quizForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const data = {
+          home_type: $('#homeType').val(),
+          activity_level: $('#activityLevel').val(),
+          experience: $('#experience').val(),
+          time_commitment: $('#timeCommitment').val(),
+          family_situation: $('#familySituation').val()
+        };
+
+        $.ajax({
+          url: '/quiz/results',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function (response) {
+            console.log(data);
+            if (response.ok) {
+              const pets = response.matches;
+              let html = '<h3>Recommended Pets</h3><ul>';
+              pets.forEach(function (pet) {
+                html += `
+                  <li>
+                    <strong>${pet.name}</strong> (${pet.species}, ${pet.breed})
+                    <br>
+                    Location: ${pet.location}
+                  </li>
+                `;
+              });
+              html += '</ul>';
+              $('#result').html(html);
+            } else {
+              $('#result').html('<p>Sorry, no pets match your criteria.</p>');
+            }
+          },
+          error: function () {
+            $('#result').html('<p>There was an error. Please try again later.</p>');
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

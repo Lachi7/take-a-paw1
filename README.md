@@ -1,33 +1,27 @@
-# Take A Paw - Pet Adoption Platform 🐾
+# 🐾 Take A Paw - Pet Adoption Platform
 
-![Take A Paw](https://img.shields.io/badge/Take-A%20Paw-brightgreen)
-![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
-![Flask](https://img.shields.io/badge/Flask-3.1.2-lightgrey)
-![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
-![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-green)
-![License](https://img.shields.io/badge/License-MIT-green)
+A Tinder-style pet adoption web application built with Flask, PostgreSQL, and modern CI/CD practices.
 
-A modern, full-stack pet adoption platform that connects loving families with rescue animals. Built with Flask, Docker, and automated CI/CD pipelines for seamless deployment.
+## 🚀 Features
 
-## 🌟 Features
+- **Tinder-style Swiping**: Swipe right to like pets, left to skip
+- **Compatibility Quiz**: Find pets that match your lifestyle  
+- **Favorites System**: Save pets you're interested in
+- **Admin Dashboard**: Manage pets and track adoptions
+- **Responsive Design**: Works on desktop and mobile
 
-### 🐕‍🦺 Core Adoption Platform
-- **Smart Pet Search** - Filter by species, breed, location, and more
-- **Personality Matching Quiz** - Find pets that match your lifestyle
-- **Complete Adoption Workflow** - Online applications with admin approval
-- **Favorites System** - Save and track pets you love
-- **Real Shelter Data** - Integration with pet API services
-- **Admin Dashboard** - Comprehensive management interface
+## 🛠 Tech Stack
 
-### 🛠 Technical Excellence
-- **Docker Containerization** - Consistent development and production environments
-- **CI/CD Pipelines** - Automated testing, building, and deployment
-- **RESTful APIs** - JSON endpoints for external integrations
-- **Responsive Design** - Mobile-first Bootstrap interface
-- **Production Ready** - Gunicorn WSGI server, health checks, monitoring
+- **Backend**: Flask, Python
+- **Database**: PostgreSQL (Neon)
+- **Frontend**: HTML, CSS, JavaScript, Jinja2
+- **Containerization**: Docker
+- **CI/CD**: GitHub Actions
+- **Deployment**: Render
 
-## 🚀 Live Deployment
+## 📦 Quick Start
 
+<<<<<<< HEAD
 ### 🌐 Production Environment
 <<<<<<< HEAD
 **Live Application:** [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)  
@@ -278,56 +272,15 @@ docker build --no-cache -t takeapaw:latest .
 ```
 
 **Port Conflicts**
+=======
+>>>>>>> new-branch
 ```bash
-# Use alternative port
-docker run -p 5001:5000 takeapaw:latest
-```
+# Development
+git clone https://github.com/your-username/take-a-paw.git
+cd take-a-paw
+pip install -r requirements.txt
+cd src && python run.py
 
-**Test Failures**
-```bash
-# Run with detailed output
-pytest -v --tb=long
-
-# Debug specific test
-pytest tests/test_app.py::test_specific -v -s
-```
-
-### Getting Help
-- Check existing [GitHub Issues](../../issues)
-- Create new issue with detailed description
-- Include environment details and error logs
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **The Cat API** & **The Dog API** for real pet data
-- **Unsplash** for beautiful pet photography
-- **Bootstrap** for responsive UI components
-- **Font Awesome** for icon library
-- **Render** for seamless deployment platform
-
-## 📞 Support & Contact
-
-- **Documentation:** [GitHub Wiki](../../wiki)
-- **Issues:** [GitHub Issues](../../issues)
-- **Discussions:** [GitHub Discussions](../../discussions)
-- **Email:** support@takeapaw.com
-
----
-
-<div align="center">
-
-## 🐾 Happy Adoptions!
-
-**Helping pets find their forever homes since 2025**
-
-[Live Demo](https://takeapaw.onrender.com) •
-[Report Bug](../../issues) •
-[Request Feature](../../issues) •
-[Contribute](../../pulls)
-
-</div>
-
+# Docker
+docker build -t takeapaw .
+docker run -p 5000:5000 takeapaw
