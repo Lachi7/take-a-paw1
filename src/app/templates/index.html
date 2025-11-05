@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Available Pets — Take A Paw{% endblock %}
+
+{% block content %}
+<section class="pet-list">
+  {% if pets %}
+    {% for pet in pets %}
+    <div class="pet-card">
+      <img src="{{ pet.image }}" alt="{{ pet.name }}" />
+      <div class="pet-info">
+        <h2>{{ pet.name }}</h2>
+        <p class="species">{{ pet.species }} — {{ pet.breed }}</p>
+        <p class="meta">{{ pet.age }} • {{ pet.gender }}</p>
+        <p class="location">{{ pet.location }}</p>
+        <a class="btn" href="/pet/{{ pet.id }}">View Details</a>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p>No pets available right now. Check back soon!</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Log In — Take A Paw{% endblock %}
+
+{% block content %}
+<h2>Log In</h2>
+<form class="form" method="post" action="/login">
+  <input type="hidden" name="next" value="{{ next_url }}">
+  <div class="grid">
+    <label>Username
+      <input name="username" required placeholder="yourname">
+    </label>
+    <label>Display name
+      <input name="display_name" placeholder="How you want to be shown">
+    </label>
+  </div>
+
+  <details class="details">
+    <summary>Contact info (optional, used on your listings)</summary>
+    <div class="grid">
+      <label>Email <input type="email" name="email" placeholder="you@example.com"></label>
+      <label>Phone <input name="phone" placeholder="+994..."></label>
+    </div>
+    <label class="checkbox">
+      <input type="checkbox" name="public_contact" checked> Show contact on listings
+    </label>
+  </details>
+
+  <button class="btn" type="submit">Log In</button>
+</form>
+{% endblock %}

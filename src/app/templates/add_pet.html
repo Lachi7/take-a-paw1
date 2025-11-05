@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Add a Pet — Take A Paw{% endblock %}
+
+{% block content %}
+<h2>Add a Pet for Adoption</h2>
+<form class="form" method="post" action="/pets">
+    <input type="hidden" name="next" value="/me/listings">
+  <div class="grid">
+    <label>Pet Name
+      <input type="text" name="name" required>
+    </label>
+
+    <label>Species
+      <select name="species" required>
+        <option value="Cat">Cat</option>
+        <option value="Dog">Dog</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+
+    <label>Breed
+      <input type="text" name="breed" required>
+    </label>
+
+    <label>Age
+      <input type="text" name="age" placeholder="e.g., 2 years" required>
+    </label>
+
+    <label>Gender
+      <select name="gender" required>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+    </label>
+
+    <label>Location
+      <input type="text" name="location" placeholder="City, Country" required>
+    </label>
+  </div>
+
+  <label>Description
+    <textarea name="description" rows="4" required></textarea>
+  </label>
+
+  <label>Image URL (optional)
+    <input type="url" name="image" placeholder="https://...">
+  </label>
+
+  <!-- Optional: per-listing override (usually leave blank to use profile contact) -->
+  <details class="details">
+    <summary>Contact override (optional)</summary>
+    <div class="grid">
+      <label>Email
+        <input type="email" name="contact_email" placeholder="owner@example.com">
+      </label>
+      <label>Phone
+        <input type="text" name="contact_phone" placeholder="+994...">
+      </label>
+    </div>
+    <label class="checkbox">
+      <input type="checkbox" name="public_contact" checked> Show contact on listing
+    </label>
+  </details>
+
+  <button class="btn" type="submit">Publish Listing</button>
+</form>
+{% endblock %}

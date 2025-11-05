@@ -29,10 +29,14 @@ A modern, full-stack pet adoption platform that connects loving families with re
 ## 🚀 Live Deployment
 
 ### 🌐 Production Environment
+<<<<<<< HEAD
 **Live Application:** [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)  
 **Health Monitor:** [https://take-a-paw.onrender.com/health](https://take-a-paw.onrender.com/health)  
 **API Status:** [https://take-a-paw.onrender.com/api/status](https://take-a-paw.onrender.com/api/status)
 
+=======
+**Live Application:** [https://take-a-paw.onrender.com](https://takeapaw.onrender.com)  
+>>>>>>> refactor/modular-backend
 
 ## 🏗️ Architecture
 
@@ -55,7 +59,11 @@ A modern, full-stack pet adoption platform that connects loving families with re
 
 ### Prerequisites
 - Python 3.12+
+<<<<<<< HEAD
 - Docker
+=======
+- Docker 
+>>>>>>> refactor/modular-backend
 - Git
 
 ### Local Development
@@ -71,7 +79,11 @@ A modern, full-stack pet adoption platform that connects loving families with re
    python3 -m venv .venv
    source .venv/bin/activate  # Linux/Mac
    # OR
+<<<<<<< HEAD
    .venv\Scripts\Activate.ps1   # Windows using powershel
+=======
+   .venv\Scripts\Activate.ps1   # Windows using powershell
+>>>>>>> refactor/modular-backend
    ```
 
 3. **Install Dependencies**
@@ -319,6 +331,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 </div>
 
----
-
-*Last updated: ${new Date().toLocaleDateString()}*
