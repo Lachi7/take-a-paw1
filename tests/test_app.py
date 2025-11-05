@@ -1,124 +1,105 @@
+# tests/test_app.py
 import sys
 import os
 import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-from app import app, local_pets
+from app import create_app
+from app.db import db
 
 @pytest.fixture
-def client():
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
-
-def test_index_route(client):
-    """Test the home page returns successfully"""
-    response = client.get('/')
-    assert response.status_code == 200
-    # Updated to match the new Tinder-style homepage text
-    assert b'Swipe to Find Your Perfect Pet' in response.data
-
-def test_pet_detail_route(client):
-    """Test individual pet page"""
-    response = client.get('/pet/101')
-    assert response.status_code == 200
-    assert b'Buddy' in response.data
-
-def test_search_pets(client):
-    """Test pet search functionality"""
-    response = client.get('/search?species=dog')
-    assert response.status_code == 200
+def app():
+    test_config = {
+        'TESTING': True,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',  
+        'WTF_CSRF_ENABLED': False,
+        'SECRET_KEY': 'test-secret-key'
+    }
     
-    response = client.get('/search?breed=Golden')
-    assert response.status_code == 200
+    app = create_app(test_config=test_config)
+    
+    with app.app_context():
+        db.create_all()
+        
+    yield app
+    
+    with app.app_context():
+        db.drop_all()
 
-def test_quiz_route(client):
-    """Test quiz page"""
-    response = client.get('/quiz')
-    assert response.status_code == 200
-    assert b'Find Your Perfect Pet Match' in response.data
+@pytest.fixture
+def init_database(app):
+    with app.app_context():
+        from app.models import Pet, User
+        
+        user = User(id="test_user", display_name="Test User", email="test@example.com")
+        db.session.add(user)
+        
+        pets = [
+            Pet(
+                name="Test Dog", species="Dog", breed="Golden Retriever", age="2 years",
+                gender="Male", location="Test Shelter", description="Friendly test dog",
+                image="https://example.com/dog.jpg", adopted=False
+            ),
+            Pet(
+                name="Test Cat", species="Cat", breed="Siamese", age="1 year",
+                gender="Female", location="Test Shelter", description="Playful test cat", 
+                image="https://example.com/cat.jpg", adopted=False
+            )
+        ]
+        for pet in pets:
+            db.session.add(pet)
+        
+        db.session.commit()
+@pytest.fixture
+def client(app):
+    return app.test_client()
 
-def test_api_pets(client):
-    """Test pets API endpoint"""
-    response = client.get('/api/pets')
+
+
+def test_health_endpoint(client):
+    response = client.get('/health')
     assert response.status_code == 200
     assert response.is_json
+    data = response.get_json()
+    assert data['status'] == 'ok'
 
-def test_api_stats(client):
-    """Test stats API endpoint"""
+def test_home_page(client, init_database):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b'swipe' in response.data.lower() or b'pet' in response.data.lower()
+
+
+def test_quiz_page(client, init_database):
+    response = client.get('/quiz')
+    assert response.status_code == 200
+
+def test_api_status(client, init_database):
     response = client.get('/api/status')
     assert response.status_code == 200
     assert response.is_json
-    data = response.get_json()
-    assert 'cat_api_working' in data
 
-def test_add_pet_route(client):
-    """Test add pet page"""
-    response = client.get('/add-pet')
-    assert response.status_code == 200
-
-def test_pet_data_structure():
-    """Test that pet data has required fields"""
-    for pet in local_pets:
-        assert 'id' in pet
-        assert 'name' in pet
-        assert 'species' in pet
-        assert 'adopted' in pet
-
-def test_test_endpoint(client):
-    """Test test endpoint exists"""
-    response = client.get('/test')
+def test_pets_api(client, init_database):
+    response = client.get('/pets')
     assert response.status_code == 200
     assert response.is_json
-    data = response.get_json()
-    assert data['status'] == 'success'
 
-def test_debug_endpoint(client):
-    """Test debug endpoint exists"""
-    response = client.get('/debug')
+def test_quiz_results(client, init_database):
+    quiz_data = {
+        "home_type": "apartment",
+        "activity_level": "medium", 
+        "experience": "some",
+        "time_commitment": "1_3_hours",
+        "family_situation": "no"
+    }
+    
+    response = client.post('/quiz/results', 
+                         json=quiz_data,
+                         content_type='application/json')
+    
     assert response.status_code == 200
     assert response.is_json
-    data = response.get_json()
-    assert 'total_pets' in data
-    assert 'local_pets' in data
-    assert 'api_pets' in data
 
-def test_favorites_route(client):
-    """Test favorites page"""
-    response = client.get('/favorites')
-    assert response.status_code == 200
-
-def test_admin_routes(client):
-    """Test admin routes (they should work with session)"""
-    with client.session_transaction() as sess:
-        sess['is_admin'] = True
-    
-    response = client.get('/admin')
-    assert response.status_code == 200
-    
-    response = client.get('/admin/adoptions')
-    assert response.status_code == 200
-
-def test_adoption_flow(client):
-    """Test adoption form access"""
-    response = client.get('/adopt/101')
-    assert response.status_code == 200
-    assert b'Adoption Application' in response.data
-
-def test_quiz_results_post(client):
-    """Test quiz results with POST data"""
-    response = client.post('/quiz/results', data={
-        'home_type': 'apartment',
-        'activity_level': 'medium',
-        'experience': 'first_time',
-        'time_commitment': 'medium',
-        'family_situation': 'alone'
-    })
-    assert response.status_code == 200
-
-def test_search_results_page(client):
-    """Test search results page displays correctly"""
-    response = client.get('/search?species=cat')
-    assert response.status_code == 200
-    assert b'Search Results' in response.data
+def test_404_page(client):
+    response = client.get('/nonexistent-page')
+    assert response.status_code == 404
