@@ -44,8 +44,11 @@ jobs:
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
         SECRET_KEY: test-secret-key-for-ci
-    
-    - name: Test build
+
+    - name: Test build with production config
       run: |
         cd src
-        python -c "from app import create_app; app = create_app(); print('App builds successfully')"
+        python -c "from app import create_app; app = create_app(); print('✅ App builds successfully')"
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
