@@ -45,7 +45,7 @@ def login_submit():
 
     session["user_id"] = user.id
 
-    next_url = data.get("next") or request.args.get("next") or url_for("pets.home_index")
+    next_url =  url_for("pets.home_index")
     if request.is_json:
         return jsonify({"ok": True, "user": {"id": user.id, "display_name": user.display_name}, "next": next_url})
     flash(f"Welcome, {user.display_name}!", "success")
