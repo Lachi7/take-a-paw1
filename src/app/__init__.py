@@ -35,7 +35,6 @@ def create_app(test_config=None):
     from .routes.admin import bp as admin_bp
     from .routes.quiz import bp as quiz_bp
     from .routes.system import bp as system_bp
-
     flask_app.register_blueprint(auth_bp)
     flask_app.register_blueprint(pets_bp)
     flask_app.register_blueprint(admin_bp)
