@@ -34,10 +34,30 @@ header {
   font-weight: 500;
 }
 
+/* Navbar links hover effect */
+.navbar .nav-links li a,
+.navbar .nav-links li .linklike {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.navbar .nav-links li a:hover,
+.navbar .nav-links li .linklike:hover {
+    transform: scale(1.1); 
+    color: #ff8c00;   
+}
 .nav-links {
   list-style: none;
   display: flex;
   gap: 1rem;
+}
+/* Navbar Logout button styling */
+.navbar .linklike[type="submit"] {
+    border: none;
+    color: #ff8c00;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
 }
 
 main {

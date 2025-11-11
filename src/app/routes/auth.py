@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify, session, redirect, url_for, render_template, flash
 from ..db import db
 from ..models import User
-
+from app.routes.auth_utils import login_required
 bp = Blueprint("auth", __name__)
 
 def _normalize_username(u: str) -> str:
@@ -95,7 +95,32 @@ def login_submit():
     flash(f"Welcome back, {user.display_name}!", "success")
     return redirect(next_url)
 
+# =========================
+# Profile
+# =========================
 
+@bp.get("/profile")
+@login_required
+def profile_form():
+    uid = session.get("user_id")
+    user = User.query.get(uid)
+    return render_template("profile.html", user=user)
+
+@bp.post("/profile")
+@login_required
+def profile_submit():
+    uid = session.get("user_id")
+    user = User.query.get(uid)
+    data = request.form
+
+    user.display_name = data.get("display_name") or user.display_name
+    user.email = data.get("email") or user.email
+    user.phone = data.get("phone") or user.phone
+    user.public_contact = str(data.get("public_contact", "true")).lower() in ("1","true","yes","on")
+
+    db.session.commit()
+    flash("Profile updated successfully!", "success")
+    return redirect(url_for("auth.profile_form"))
 # =========================
 # Logout
 # =========================

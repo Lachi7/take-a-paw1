@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='paw.png') }}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {% block head %}
+  {% endblock %}
 </head>
 
 <body>
@@ -15,22 +17,24 @@
     <nav class="navbar">
       <h1><a href="/">🐾 Take A Paw</a></h1>
       <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/add-pet">Add Pet</a></li>
-        <li><a href="/favorites">Favorites</a></li>
-        <li><a href="/me/listings">My Listings</a></li>
-        <li><a href="/quiz">Quiz</a></li>
+  <li><a href="/">Home</a></li>
+  <li><a href="/quiz">Quiz</a></li>
+  {% if session.get('user_id') %}
+    <li><a href="{{ url_for('pets.add_pet_form') }}">Add Pet</a></li>
+    <li><a href="/favorites">Favorites</a></li>
+    <li><a href="/me/listings">My Listings</a></li>
+    <li><a href="{{ url_for('auth.profile_form') }}">Profile</a></li>
+    <li>
+      <form action="{{ url_for('auth.logout') }}" method="post">
+        <button class="linklike" type="submit">Logout</button>
+      </form>
+    </li>
+  {% else %}
+    <li><a href="{{ url_for('auth.login_form', next=request.path) }}">Login</a></li>
+    <li><a href="{{ url_for('auth.register_form', next=request.path) }}">Register</a></li>
+  {% endif %}
+</ul>
 
-        {% if session.get('user_id') %}
-        <li>
-          <form action="/logout" method="post">
-            <button class="linklike" type="submit">Logout ({{ session.get('user_id') }})</button>
-          </form>
-        </li>
-        {% else %}
-        <li><a href="/login?next={{ request.path }}">Login</a></li>
-        {% endif %}
-      </ul>
 
       <form class="nav-search" action="/search" method="get">
         <input name="species" placeholder="Species (Cat/Dog)" value="{{ request.args.get('species','') }}">

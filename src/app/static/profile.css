@@ -1,0 +1,63 @@
+/* Profile page only */
+.profile-page {
+  max-width: 500px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.profile-page h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.profile-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.profile-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="email"] {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.profile-form input[type="text"]:focus,
+.profile-form input[type="email"]:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 4px #4CAF50;
+}
+
+.profile-form .checkbox {
+  margin-top: 1rem;
+}
+
+.profile-form button.btn {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-form button.btn:hover {
+  background-color: #45a049;
+}

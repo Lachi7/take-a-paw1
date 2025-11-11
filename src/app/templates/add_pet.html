@@ -45,23 +45,17 @@
   <label>Image URL (optional)
     <input type="url" name="image" placeholder="https://...">
   </label>
+  <br>
+  <p><em>To change your main contact info, go to <a href="{{ url_for('auth.profile_form') }}">Profile</a>.</em></p>
 
-  <!-- Optional: per-listing override (usually leave blank to use profile contact) -->
-  <details class="details">
-    <summary>Contact override (optional)</summary>
-    <div class="grid">
-      <label>Email
-        <input type="email" name="contact_email" placeholder="owner@example.com">
-      </label>
-      <label>Phone
-        <input type="text" name="contact_phone" placeholder="+994...">
-      </label>
-    </div>
-    <label class="checkbox">
-      <input type="checkbox" name="public_contact" checked> Show contact on listing
-    </label>
-  </details>
 
-  <button class="btn" type="submit">Publish Listing</button>
+  <button class="btn" type="submit" id="submit-btn">Publish Listing</button>
+
+<script>
+document.getElementById("submit-btn").addEventListener("click", function(e) {
+    e.target.disabled = true; // disable button
+    e.target.form.submit();    // submit form
+});
+</script>
 </form>
 {% endblock %}

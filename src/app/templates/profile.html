@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Profile — Take A Paw{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+  <h2>My Profile</h2>
+
+  <form class="profile-form" method="post" action="{{ url_for('auth.profile_submit') }}">
+    <div class="form-group">
+      <label>Username:</label>
+      <span>{{ user.username }}</span>
+    </div>
+
+    <div class="form-group">
+      <label>Display Name:</label>
+      <input name="display_name" value="{{ user.display_name }}">
+    </div>
+
+    <div class="form-group">
+      <label>Email:</label>
+      <input name="email" value="{{ user.email }}">
+    </div>
+
+    <div class="form-group">
+      <label>Phone:</label>
+      <input name="phone" value="{{ user.phone }}">
+    </div>
+
+    <div class="form-group checkbox">
+      <label>
+        <input type="checkbox" name="public_contact" {% if user.public_contact %}checked{% endif %}>
+        Show contact publicly
+      </label>
+    </div>
+
+    <button type="submit" class="btn">Save</button>
+  </form>
+</div>
+{% endblock %}
