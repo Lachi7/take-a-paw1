@@ -11,7 +11,7 @@ class User(db.Model):
     display_name = db.Column(db.String(120), nullable=True)
     email = db.Column(db.String(120), nullable=True)
     phone = db.Column(db.String(50), nullable=True)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
     public_contact = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
@@ -60,5 +60,5 @@ class Favorite(db.Model):
     pet_id  = db.Column(db.Integer, db.ForeignKey("pets.id"), primary_key=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
-    user = db.relationship("User", lazy=True)
-    pet  = db.relationship("Pet",  lazy=True)
+    user = db.relationship("User",backref="favorites", lazy=True)
+    pet  = db.relationship("Pet",  backref="favorited_by", lazy=True)
