@@ -32,7 +32,14 @@ def init_database(app):
     with app.app_context():
         from app.models import Pet, User
         
-        user = User(id="test_user", display_name="Test User", email="test@example.com")
+        user = User(
+    display_name="Test User",
+    email="test@example.com",
+    username="testuser",        # required if your table has NOT NULL
+    password_hash="testpass",   # required if your table has NOT NULL
+    public_contact=True         # keep as 1 / True
+)
+    
         db.session.add(user)
         
         pets = [
