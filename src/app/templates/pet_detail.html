@@ -1,56 +1,58 @@
-{% extends "base.html" %}
-{% block title %}{{ pet.name }} — {{ pet.species }} · Take A Paw{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ pet.name }} — {{ pet.species }} ·
+Take A Paw{% endblock %} {% block content %}
 <a class="back-link" href="/">← Back to pets</a>
 
 <section class="pet-detail">
-    <div class="pet-photo">
-        <img src="{{ pet.image }}" alt="{{ pet.name }}" />
-        {% if pet.adopted %}
-        <span class="badge adopted">Adopted</span>
-        {% endif %}
+  <div class="pet-photo">
+    <img src="{{ pet.image }}" alt="{{ pet.name }}" />
+    {% if pet.adopted %}
+    <span class="badge adopted">Adopted</span>
+    {% endif %}
+  </div>
+
+  <div class="pet-meta">
+    <h1>{{ pet.name }}</h1>
+    <p class="species">{{ pet.species }} — {{ pet.breed }}</p>
+    <p class="meta">{{ pet.age }} • {{ pet.gender }}</p>
+    <p class="location">📍 {{ pet.location }}</p>
+
+    {% if pet.description %}
+    <p class="desc">{{ pet.description }}</p>
+    {% endif %}
+<div class="contact-card">
+  <h3>Contact</h3>
+
+ {% if contact_visible %}
+  <div class="contact-actions">
+    {% if contact_phone %}
+      <a href="tel:{{ contact_phone }}">📞 Call Owner</a>
+    {% endif %}
+    {% if contact_email %}
+      <a href="mailto:{{ contact_email }}">📧 Email Owner</a>
+    {% endif %}
+  </div>
+  <p class="contact-note">Contact info is provided by the listing owner.</p>
+{% else %}
+  <p class="contact-missing">This owner prefers not to share contact info publicly.</p>
+{% endif %}
+</div>
+
+    <div class="actions-row">
+      <form method="post" action="/pets/{{ pet.id }}/favorite">
+        <input type="hidden" name="next" value="{{ request.path }}" />
+        <button class="btn outline" type="submit">♡ Favorite</button>
+      </form>
+
+      {% if session.get('user_id') == pet.owner_id %}
+      <form
+        method="post"
+        action="{{ url_for('pets.delete_pet', pet_id=pet.id) }}"
+        onsubmit="return confirm('Are you sure you want to delete this pet?');"
+      >
+        <button type="submit" class="btn danger">Delete Pet</button>
+      </form>
+      {% endif %}
     </div>
-
-    <div class="pet-meta">
-        <h1>{{ pet.name }}</h1>
-        <p class="species">{{ pet.species }} — {{ pet.breed }}</p>
-        <p class="meta">{{ pet.age }} • {{ pet.gender }}</p>
-        <p class="location">📍 {{ pet.location }}</p>
-
-        {% if pet.description %}
-        <p class="desc">{{ pet.description }}</p>
-        {% endif %}
-
-        <div class="contact-card">
-            <h3>Contact</h3>
-
-            {% if pet.contact_email or pet.contact_phone %}
-            <div class="contact-actions">
-                {% if pet.contact_email %}
-                <a class="btn" href="mailto:{{ pet.contact_email }}">Email Owner</a>
-                {% endif %}
-                {% if pet.contact_phone %}
-                <a class="btn secondary" href="tel:{{ pet.contact_phone|replace(' ', '') }}">Call Owner</a>
-                {% endif %}
-            </div>
-            <p class="contact-note">
-                Contact info is provided by the listing owner.
-            </p>
-            {% else %}
-            <p class="contact-missing">
-                Contact info is hidden for this listing. Please check back later.
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="actions-row">
-            <form method="post" action="/pets/{{ pet.id }}/favorite">
-                <input type="hidden" name="next" value="{{ request.path }}">
-                <button class="btn outline" type="submit">♡ Favorite</button>
-            </form>
-        </div>
-
-    </div>
+  </div>
 </section>
 {% endblock %}

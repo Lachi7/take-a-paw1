@@ -1,5 +1,5 @@
 # app/routes/pets.py
-from flask import Blueprint, flash, jsonify, redirect, request, session, render_template, url_for
+from flask import Blueprint, flash, jsonify, redirect, request, session, render_template, url_for, abort
 
 from app.routes.auth_utils import login_required
 from ..db import db
@@ -8,26 +8,23 @@ from ..models import Favorite, Pet, User
 bp = Blueprint("pets", __name__)
 
 def _resolve_contact(p: Pet):
-    # Prefer per-pet override
-    email = p.contact_email_override
-    phone = p.contact_phone_override
+    owner = p.owner
+    owner_public = owner.public_contact if owner else False
 
-    # Fall back to owner's contact if public and no override
-    if p.owner_id and p.owner:
-        if not email and p.owner.public_contact:
-            email = p.owner.email
-        if not phone and p.owner.public_contact:
-            phone = p.owner.phone
+    email = p.contact_email_override or (owner.email if owner else None)
+    phone = p.contact_phone_override or (owner.phone if owner else None)
 
-    # Respect per-pet visibility
-    if not p.public_contact:
+    visible = bool(owner_public and (email or phone))
+
+    if not visible:
         email = None
         phone = None
 
-    return email, phone
+    return email, phone, visible
+
 
 def serialize_pet(p: Pet):
-    email, phone = _resolve_contact(p)
+    email, phone, contact_visible = _resolve_contact(p)
     return {
         "id": p.id,
         "name": p.name,
@@ -44,8 +41,10 @@ def serialize_pet(p: Pet):
         "public_contact": p.public_contact,
         "contact_email": email,
         "contact_phone": phone,
+        "contact_visible": contact_visible,  # important!
         "created_at": p.created_at.isoformat() if p.created_at else None,
     }
+
 
 @bp.get("/pets")
 def list_pets():
@@ -182,6 +181,34 @@ def toggle_favorite(pet_id: int):
     next_url = request.form.get("next") or request.headers.get("Referer") or url_for("pets.home_index")
     return redirect(next_url)
 
+
+@bp.post("/pets/<int:pet_id>/delete")
+def delete_pet(pet_id: int):
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Please log in to delete a pet.", "error")
+        return redirect(url_for("auth.login_form", next=request.path))
+
+    pet = Pet.query.get(pet_id)
+    if not pet:
+        flash("Pet not found.", "error")
+        return redirect(url_for("pets.home_index"))
+
+    if pet.owner_id != user_id:
+        abort(403)  # Forbidden
+
+    try:
+        db.session.delete(pet)
+        db.session.commit()
+        flash(f"Pet '{pet.name}' has been deleted.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("Error deleting pet. Please try again.", "error")
+        print(f"Delete error: {e}")
+
+    return redirect(url_for("pets.my_listings_page"))
+
+
 # my favorites
 # existing JSON API (keep it!)
 @bp.get("/me/favorites")
@@ -240,9 +267,16 @@ def home_pet_detail(pet_id: int):
     if not p or p.adopted:
         return render_template("404.html"), 404
 
-    # Reuse your serializer so the template gets contact_* fields
-    pet = serialize_pet(p)
-    return render_template("pet_detail.html", pet=pet)
+    email, phone, contact_visible = _resolve_contact(p)
+    return render_template(
+        "pet_detail.html",
+        pet=p,
+        contact_email=email,
+        contact_phone=phone,
+        contact_visible=contact_visible  # use this in template
+    )
+
+
 
 @bp.get("/add-pet")
 @login_required

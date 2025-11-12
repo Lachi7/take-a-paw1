@@ -60,6 +60,16 @@ header {
     transition: background 0.2s ease;
 }
 
+.btn.danger {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+}
+
+.btn.danger:hover {
+  background-color: #c9302c;
+}
+
 main {
   flex: 1;
   padding: 2rem;

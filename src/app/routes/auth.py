@@ -116,11 +116,24 @@ def profile_submit():
     user.display_name = data.get("display_name") or user.display_name
     user.email = data.get("email") or user.email
     user.phone = data.get("phone") or user.phone
-    user.public_contact = str(data.get("public_contact", "true")).lower() in ("1","true","yes","on")
+    # Checkbox: present in form means True, missing means False
+    user.public_contact = "public_contact" in data
 
     db.session.commit()
     flash("Profile updated successfully!", "success")
     return redirect(url_for("auth.profile_form"))
+
+
+@bp.post("/profile/toggle-contact")
+@login_required
+def toggle_public_contact():
+    uid = session.get("user_id")
+    user = User.query.get(uid)
+    user.public_contact = not user.public_contact
+    db.session.commit()
+    return jsonify({"ok": True, "public_contact": user.public_contact})
+
+
 # =========================
 # Logout
 # =========================

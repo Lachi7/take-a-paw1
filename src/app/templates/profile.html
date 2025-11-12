@@ -30,10 +30,10 @@
       <input name="phone" value="{{ user.phone }}">
     </div>
 
-    <div class="form-group checkbox">
+    <div class="form-group">
       <label>
-        <input type="checkbox" name="public_contact" {% if user.public_contact %}checked{% endif %}>
-        Show contact publicly
+        <input type="checkbox" name="public_contact" value="1" {% if user.public_contact %}checked{% endif %}>
+        Show my contact info publicly
       </label>
     </div>
 
