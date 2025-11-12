@@ -1,0 +1,18 @@
+{% extends "admin_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="card">
+  <h3>Pet Stats</h3>
+  <p>Available: {{ stats['available'] }}</p>
+  <p>Adopted: {{ stats['adopted'] }}</p>
+</div>
+
+<div class="card">
+  <h3>User Stats</h3>
+  <p>Total Users: {{ user_stats['total_users'] }}</p>
+  <p>Users created today: {{ user_stats['created_today'] }}</p>
+  <p>Active today: {{ user_stats['active_today'] }}</p>
+</div>
+{% endblock %}

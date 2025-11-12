@@ -1,0 +1,32 @@
+{% extends "admin_base.html" %}
+{% block title %}Admin - Users{% endblock %}
+
+{% block content %}
+<h2>Users List</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Pets Count</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.id }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.pets|length }}</td>
+      <td>
+        <form action="{{ url_for('admin.admin_delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
