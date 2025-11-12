@@ -1,6 +1,5 @@
-{% extends "admin_base.html" %}
-{% block title %}Charts{% endblock %}
-{% block content %}
+{% extends "admin_base.html" %} {% block title %}Charts{% endblock %} {% block
+content %}
 <h1>Charts & Statistics</h1>
 
 <div class="charts-grid">
@@ -21,52 +20,52 @@
 </div>
 
 <script>
-const speciesData = {{ species_counts|tojson }};
-const ageData = {{ age_counts|tojson }};
-const usersData = {{ users_counts|tojson }};
+  const speciesData = {{ species_counts|tojson }};
+  const ageData = {{ age_counts|tojson }};
+  const usersData = {{ users_counts|tojson }};
 
-new Chart(document.getElementById('speciesChart').getContext('2d'), {
-  type: 'bar',
-  data: {
-    labels: Object.keys(speciesData),
-    datasets: [{ label:'Species Count', data:Object.values(speciesData), backgroundColor:'#3498db' }]
-  },
-  options:{responsive:true, plugins:{legend:{display:false}}}
-});
+  new Chart(document.getElementById('speciesChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(speciesData),
+      datasets: [{ label:'Species Count', data:Object.values(speciesData), backgroundColor:'#3498db' }]
+    },
+    options:{responsive:true, plugins:{legend:{display:false}}}
+  });
 
-new Chart(document.getElementById('ageChart').getContext('2d'), {
-  type:'bar',
-  data:{
-    labels:Object.keys(ageData),
-    datasets:[{label:'Age Count', data:Object.values(ageData), backgroundColor:'#e67e22'}]
-  },
-  options:{responsive:true, plugins:{legend:{display:false}}}
-});
+  new Chart(document.getElementById('ageChart').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:Object.keys(ageData),
+      datasets:[{label:'Age Count', data:Object.values(ageData), backgroundColor:'#e67e22'}]
+    },
+    options:{responsive:true, plugins:{legend:{display:false}}}
+  });
 
-new Chart(document.getElementById('usersChart').getContext('2d'), {
-  type:'line',
-  data:{
-    labels:Object.keys(usersData),
-    datasets:[{label:'Users Created', data:Object.values(usersData), fill:false, borderColor:'#2ecc71', tension:0.3}]
-  },
-  options:{responsive:true}
-});
+  new Chart(document.getElementById('usersChart').getContext('2d'), {
+    type:'line',
+    data:{
+      labels:Object.keys(usersData),
+      datasets:[{label:'Users Created', data:Object.values(usersData), fill:false, borderColor:'#2ecc71', tension:0.3}]
+    },
+    options:{responsive:true}
+  });
 </script>
 
 <style>
-.charts-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
+  .charts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
 
-.charts-grid .card {
-  flex: 1 1 300px; /* each chart card min 300px wide, grow as needed */
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  background: #fff;
-}
+  .charts-grid .card {
+    flex: 1 1 300px; /* each chart card min 300px wide, grow as needed */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background: #fff;
+  }
 </style>
 {% endblock %}

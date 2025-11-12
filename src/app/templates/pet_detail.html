@@ -19,23 +19,24 @@ Take A Paw{% endblock %} {% block content %}
     {% if pet.description %}
     <p class="desc">{{ pet.description }}</p>
     {% endif %}
-<div class="contact-card">
-  <h3>Contact</h3>
+    <div class="contact-card">
+      <h3>Contact</h3>
 
- {% if contact_visible %}
-  <div class="contact-actions">
-    {% if contact_phone %}
-      <a href="tel:{{ contact_phone }}">📞 Call Owner</a>
-    {% endif %}
-    {% if contact_email %}
-      <a href="mailto:{{ contact_email }}">📧 Email Owner</a>
-    {% endif %}
-  </div>
-  <p class="contact-note">Contact info is provided by the listing owner.</p>
-{% else %}
-  <p class="contact-missing">This owner prefers not to share contact info publicly.</p>
-{% endif %}
-</div>
+      {% if contact_visible %}
+      <div class="contact-actions">
+        {% if contact_phone %}
+        <a href="tel:{{ contact_phone }}">📞 Call Owner</a>
+        {% endif %} {% if contact_email %}
+        <a href="mailto:{{ contact_email }}">📧 Email Owner</a>
+        {% endif %}
+      </div>
+      <p class="contact-note">Contact info is provided by the listing owner.</p>
+      {% else %}
+      <p class="contact-missing">
+        This owner prefers not to share contact info publicly.
+      </p>
+      {% endif %}
+    </div>
 
     <div class="actions-row">
       <form method="post" action="/pets/{{ pet.id }}/favorite">

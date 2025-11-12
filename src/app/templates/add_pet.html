@@ -1,16 +1,16 @@
-{% extends "base.html" %}
-{% block title %}Add a Pet — Take A Paw{% endblock %}
-
+{% extends "base.html" %} {% block title %}Add a Pet — Take A Paw{% endblock %}
 {% block content %}
 <h2>Add a Pet for Adoption</h2>
 <form class="form" method="post" action="/pets">
-    <input type="hidden" name="next" value="/me/listings">
+  <input type="hidden" name="next" value="/me/listings" />
   <div class="grid">
-    <label>Pet Name
-      <input type="text" name="name" required>
+    <label
+      >Pet Name
+      <input type="text" name="name" required />
     </label>
 
-    <label>Species
+    <label
+      >Species
       <select name="species" required>
         <option value="Cat">Cat</option>
         <option value="Dog">Dog</option>
@@ -18,44 +18,56 @@
       </select>
     </label>
 
-    <label>Breed
-      <input type="text" name="breed" required>
+    <label
+      >Breed
+      <input type="text" name="breed" required />
     </label>
 
-    <label>Age
-      <input type="text" name="age" placeholder="e.g., 2 years" required>
+    <label
+      >Age
+      <input type="text" name="age" placeholder="e.g., 2 years" required />
     </label>
 
-    <label>Gender
+    <label
+      >Gender
       <select name="gender" required>
         <option>Male</option>
         <option>Female</option>
       </select>
     </label>
 
-    <label>Location
-      <input type="text" name="location" placeholder="City, Country" required>
+    <label
+      >Location
+      <input type="text" name="location" placeholder="City, Country" required />
     </label>
   </div>
 
-  <label>Description
+  <label
+    >Description
     <textarea name="description" rows="4" required></textarea>
   </label>
 
-  <label>Image URL (optional)
-    <input type="url" name="image" placeholder="https://...">
+  <label
+    >Image URL (optional)
+    <input type="url" name="image" placeholder="https://..." />
   </label>
-  <br>
-  <p><em>To change your main contact info, go to <a href="{{ url_for('auth.profile_form') }}">Profile</a>.</em></p>
-
+  <br />
+  <p>
+    <em
+      >To change your main contact info, go to
+      <a href="{{ url_for('auth.profile_form') }}">Profile</a>.</em
+    >
+  </p>
 
   <button class="btn" type="submit" id="submit-btn">Publish Listing</button>
 
-<script>
-document.getElementById("submit-btn").addEventListener("click", function(e) {
-    e.target.disabled = true; // disable button
-    e.target.form.submit();    // submit form
-});
-</script>
+  <script>
+    document
+      .getElementById("submit-btn")
+      .addEventListener("click", function (e) {
+        e.target.disabled = true; // disable button
+        e.target.form.submit(); // submit form
+      });
+  </script>
 </form>
 {% endblock %}

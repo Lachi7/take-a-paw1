@@ -1,44 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Admin Panel{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: sans-serif; margin:0; background:#f4f4f9; }
-    nav.navbar { background:#2c3e50; color:white; display:flex; padding:10px; align-items:center; }
-    nav.navbar a { color:white; text-decoration:none; margin-right:20px; }
-    nav.navbar a.active { font-weight:bold; text-decoration:underline; }
-    main { padding:20px; }
-    .card { background:white; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-    canvas { max-width:100%; }
-  </style>
-  {% block head %}{% endblock %}
-</head>
-<body>
-  <nav class="navbar">
-    <h2 style="margin-right:40px;">Admin Panel</h2>
-    <a href="{{ url_for('admin.admin_dashboard') }}" class="{% if active=='dashboard' %}active{% endif %}">Dashboard</a>
-    <a href="{{ url_for('admin.admin_charts') }}" class="{% if active=='charts' %}active{% endif %}">Charts</a>
-    <a href="{{ url_for('admin.admin_users') }}" class="{% if active=='users' %}active{% endif %}">Users</a>
-    <a href="{{ url_for('admin.admin_pets') }}" class="{% if active=='pets' %}active{% endif %}">Pets</a>
-    <form method="post" action="{{ url_for('admin.admin_logout') }}" style="margin-left:auto;">
-      <button style="padding:5px 10px;">Logout</button>
-    </form>
-  </nav>
-  <main>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div>
-          {% for category,msg in messages %}
-            <div class="flash {{ category }}">{{ msg }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        background: #f4f4f9;
+      }
+      nav.navbar {
+        background: #2c3e50;
+        color: white;
+        display: flex;
+        padding: 10px;
+        align-items: center;
+      }
+      nav.navbar a {
+        color: white;
+        text-decoration: none;
+        margin-right: 20px;
+      }
+      nav.navbar a.active {
+        font-weight: bold;
+        text-decoration: underline;
+      }
+      main {
+        padding: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      canvas {
+        max-width: 100%;
+      }
+    </style>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <nav class="navbar">
+      <h2 style="margin-right: 40px">Admin Panel</h2>
+      <a
+        href="{{ url_for('admin.admin_dashboard') }}"
+        class="{% if active=='dashboard' %}active{% endif %}"
+        >Dashboard</a
+      >
+      <a
+        href="{{ url_for('admin.admin_charts') }}"
+        class="{% if active=='charts' %}active{% endif %}"
+        >Charts</a
+      >
+      <a
+        href="{{ url_for('admin.admin_users') }}"
+        class="{% if active=='users' %}active{% endif %}"
+        >Users</a
+      >
+      <a
+        href="{{ url_for('admin.admin_pets') }}"
+        class="{% if active=='pets' %}active{% endif %}"
+        >Pets</a
+      >
+      <form
+        method="post"
+        action="{{ url_for('admin.admin_logout') }}"
+        style="margin-left: auto"
+      >
+        <button style="padding: 5px 10px">Logout</button>
+      </form>
+    </nav>
+    <main>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div>
+        {% for category,msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </main>
+  </body>
 </html>

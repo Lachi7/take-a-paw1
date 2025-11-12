@@ -1,69 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Take A Paw{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{{ url_for('static', filename='paw.png') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block head %} {% endblock %}
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Take A Paw{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='paw.png') }}">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  {% block head %}
-  {% endblock %}
-</head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <h1><a href="/">🐾 Take A Paw</a></h1>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/quiz">Quiz</a></li>
+          {% if session.get('user_id') %}
+          <li><a href="{{ url_for('pets.add_pet_form') }}">Add Pet</a></li>
+          <li><a href="/favorites">Favorites</a></li>
+          <li><a href="/me/listings">My Listings</a></li>
+          <li><a href="{{ url_for('auth.profile_form') }}">Profile</a></li>
+          <li>
+            <form action="{{ url_for('auth.logout') }}" method="post">
+              <button class="linklike" type="submit">Logout</button>
+            </form>
+          </li>
+          {% else %}
+          <li>
+            <a href="{{ url_for('auth.login_form', next=request.path) }}"
+              >Login</a
+            >
+          </li>
+          <li>
+            <a href="{{ url_for('auth.register_form', next=request.path) }}"
+              >Register</a
+            >
+          </li>
+          {% endif %}
+        </ul>
 
-<body>
-  <header>
-    <nav class="navbar">
-      <h1><a href="/">🐾 Take A Paw</a></h1>
-      <ul class="nav-links">
-  <li><a href="/">Home</a></li>
-  <li><a href="/quiz">Quiz</a></li>
-  {% if session.get('user_id') %}
-    <li><a href="{{ url_for('pets.add_pet_form') }}">Add Pet</a></li>
-    <li><a href="/favorites">Favorites</a></li>
-    <li><a href="/me/listings">My Listings</a></li>
-    <li><a href="{{ url_for('auth.profile_form') }}">Profile</a></li>
-    <li>
-      <form action="{{ url_for('auth.logout') }}" method="post">
-        <button class="linklike" type="submit">Logout</button>
-      </form>
-    </li>
-  {% else %}
-    <li><a href="{{ url_for('auth.login_form', next=request.path) }}">Login</a></li>
-    <li><a href="{{ url_for('auth.register_form', next=request.path) }}">Register</a></li>
-  {% endif %}
-</ul>
+        <form class="nav-search" action="/search" method="get">
+          <input
+            name="species"
+            placeholder="Species (Cat/Dog)"
+            value="{{ request.args.get('species','') }}"
+          />
+          <input
+            name="breed"
+            placeholder="Breed"
+            value="{{ request.args.get('breed','') }}"
+          />
+          <input
+            name="location"
+            placeholder="Location"
+            value="{{ request.args.get('location','') }}"
+          />
+          <button class="btn small" type="submit">Search</button>
+        </form>
+      </nav>
+    </header>
 
+    <main>
+      {# Flash messages area #} {% with messages =
+      get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="flash-wrap">
+        {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </main>
 
-      <form class="nav-search" action="/search" method="get">
-        <input name="species" placeholder="Species (Cat/Dog)" value="{{ request.args.get('species','') }}">
-        <input name="breed" placeholder="Breed" value="{{ request.args.get('breed','') }}">
-        <input name="location" placeholder="Location" value="{{ request.args.get('location','') }}">
-        <button class="btn small" type="submit">Search</button>
-      </form>
-
-    </nav>
-  </header>
-
-  <main>
-    {# Flash messages area #}
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div class="flash-wrap">
-      {% for category, msg in messages %}
-      <div class="flash {{ category }}">{{ msg }}</div>
-      {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
-
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer>
-    <p>© 2025 Take A Paw — Made with ❤️ for animals</p>
-  </footer>
-</body>
-
+    <footer>
+      <p>© 2025 Take A Paw — Made with ❤️ for animals</p>
+    </footer>
+  </body>
 </html>

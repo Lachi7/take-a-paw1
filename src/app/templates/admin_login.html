@@ -1,16 +1,14 @@
-{% extends "admin_base.html" %}
-{% block title %}Admin Login{% endblock %}
-
-{% block content %}
+{% extends "admin_base.html" %} {% block title %}Admin Login{% endblock %} {%
+block content %}
 <h2>Admin Login</h2>
 <form method="post" action="{{ url_for('admin.admin_login_submit') }}">
   <div>
     <label>Username</label>
-    <input name="username" required>
+    <input name="username" required />
   </div>
   <div>
     <label>Password</label>
-    <input name="password" type="password" required>
+    <input name="password" type="password" required />
   </div>
   <button type="submit">Login</button>
 </form>

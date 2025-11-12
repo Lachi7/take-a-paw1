@@ -1,17 +1,22 @@
-{% extends "base.html" %}
-{% block title %}Log In — Take A Paw{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Log In — Take A Paw{% endblock %} {%
+block content %}
 <h2>Log In</h2>
 <form class="form" method="post" action="/login">
-  <input type="hidden" name="next" value="{{ next_url }}">
+  <input type="hidden" name="next" value="{{ next_url }}" />
 
   <div class="grid">
-    <label>Username
-      <input name="username" required placeholder="your username">
+    <label
+      >Username
+      <input name="username" required placeholder="your username" />
     </label>
-    <label>Password
-      <input name="password" type="password" required placeholder="your password">
+    <label
+      >Password
+      <input
+        name="password"
+        type="password"
+        required
+        placeholder="your password"
+      />
     </label>
   </div>
 
