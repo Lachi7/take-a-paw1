@@ -1,16 +1,21 @@
-{% extends "base.html" %} {% block title %}Add a Pet — Take A Paw{% endblock %}
+{% extends "base.html" %} 
+{% block title %}Add a Pet — Take A Paw{% endblock %}
+
 {% block content %}
 <h2>Add a Pet for Adoption</h2>
+
 <form class="form" method="post" action="/pets">
   <input type="hidden" name="next" value="/me/listings" />
+
+  <!-- Basic pet info -->
   <div class="grid">
-    <label
-      >Pet Name
+    <label>
+      Pet Name
       <input type="text" name="name" required />
     </label>
 
-    <label
-      >Species
+    <label>
+      Species
       <select name="species" required>
         <option value="Cat">Cat</option>
         <option value="Dog">Dog</option>
@@ -18,45 +23,105 @@
       </select>
     </label>
 
-    <label
-      >Breed
+    <label>
+      Breed
       <input type="text" name="breed" required />
     </label>
 
-    <label
-      >Age
+    <label>
+      Age
       <input type="text" name="age" placeholder="e.g., 2 years" required />
     </label>
 
-    <label
-      >Gender
+    <label>
+      Gender
       <select name="gender" required>
         <option>Male</option>
         <option>Female</option>
       </select>
     </label>
 
-    <label
-      >Location
+    <label>
+      Location
       <input type="text" name="location" placeholder="City, Country" required />
     </label>
   </div>
 
-  <label
-    >Description
+  <!-- 🔽 New: quiz-related matching info -->
+  <h3>Matchmaking details (used by the quiz)</h3>
+  <p class="muted">
+    This helps our matching quiz suggest this pet to the right adopters.
+  </p>
+
+  <div class="grid">
+    <label>
+      Home type best suited
+      <select name="home_type">
+        <option value="">No preference</option>
+        <option value="apartment">Apartment</option>
+        <option value="house_with_yard">House with yard</option>
+        <option value="farm">Farm / rural</option>
+      </select>
+    </label>
+
+    <label>
+      Pet activity level
+      <select name="activity_level">
+        <option value="">No preference</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </label>
+
+    <label>
+      Experience level required
+      <select name="experience">
+        <option value="">No preference</option>
+        <option value="beginner">Beginner-friendly</option>
+        <option value="intermediate">Some experience</option>
+        <option value="advanced">Experienced only</option>
+      </select>
+    </label>
+
+    <label>
+      Time commitment needed
+      <select name="time_commitment">
+        <option value="">No preference</option>
+        <option value="low">Low</option>
+        <option value="medium">Moderate</option>
+        <option value="high">High</option>
+      </select>
+    </label>
+
+    <label>
+      Best family situation
+      <select name="family_situation">
+        <option value="">No preference</option>
+        <option value="no_children">No children</option>
+        <option value="older_children">Older children</option>
+        <option value="small_children">Small children</option>
+        <option value="other_pets_ok">Good with other pets</option>
+      </select>
+    </label>
+  </div>
+
+  <label>
+    Description
     <textarea name="description" rows="4" required></textarea>
   </label>
 
-  <label
-    >Image URL (optional)
+  <label>
+    Image URL (optional)
     <input type="url" name="image" placeholder="https://..." />
   </label>
+
   <br />
   <p>
-    <em
-      >To change your main contact info, go to
-      <a href="{{ url_for('auth.profile_form') }}">Profile</a>.</em
-    >
+    <em>
+      To change your main contact info, go to
+      <a href="{{ url_for('auth.profile_form') }}">Profile</a>.
+    </em>
   </p>
 
   <button class="btn" type="submit" id="submit-btn">Publish Listing</button>
@@ -66,7 +131,7 @@
       .getElementById("submit-btn")
       .addEventListener("click", function (e) {
         e.target.disabled = true; // disable button
-        e.target.form.submit(); // submit form
+        e.target.form.submit();   // submit form
       });
   </script>
 </form>

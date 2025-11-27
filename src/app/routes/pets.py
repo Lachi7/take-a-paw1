@@ -82,13 +82,20 @@ def create_listing():
         return redirect(url_for("auth.login_form", next=url_for("pets.add_pet_form")))
 
     data = request.get_json(silent=True) or request.form
-    required = ["name","species","breed","age","gender","location","description"]
+
+    # required basic fields
+    required = ["name", "species", "breed", "age", "gender", "location", "description"]
     missing = [k for k in required if not (data.get(k) or "").strip()]
     if missing:
         if request.is_json:
             return jsonify({"ok": False, "error": f"missing fields: {', '.join(missing)}"}), 400
         flash(f"Missing fields: {', '.join(missing)}", "error")
         return redirect(url_for("pets.add_pet_form"))
+
+    # helper: normalize empty strings to None
+    def clean(key):
+        value = (data.get(key) or "").strip()
+        return value or None
 
     pet = Pet(
         name=data["name"].strip(),
@@ -102,27 +109,34 @@ def create_listing():
         adopted=False,
         source="user",
         owner_id=user_id,
-        contact_email_override=(data.get("contact_email") or None),
-        contact_phone_override=(data.get("contact_phone") or None),
+        contact_email_override=clean("contact_email"),
+        contact_phone_override=clean("contact_phone"),
         public_contact=bool(data.get("public_contact", True)),
+
+        # 🔽 quiz-related fields
+        home_type=clean("home_type"),
+        activity_level=clean("activity_level"),
+        experience=clean("experience"),
+        time_commitment=clean("time_commitment"),
+        family_situation=clean("family_situation"),
     )
+
     db.session.add(pet)
     db.session.commit()
 
-    # Form submissions: redirect to a real page with a flash
+    # Form submissions: redirect
     if not request.is_json:
-        # Choose where to go:
-        next_url = request.form.get("next")  # optional hidden field in the form
+        next_url = request.form.get("next")
         if next_url:
             flash(f"Your listing “{pet.name}” is live!", "success")
             return redirect(next_url)
 
-        # Default: go to the new pet's page
         flash(f"Your listing “{pet.name}” is live!", "success")
         return redirect(url_for("pets.home_pet_detail", pet_id=pet.id))
 
-    # JSON clients still get JSON:
+    # JSON clients
     return jsonify({"ok": True, "pet": serialize_pet(pet)}), 201
+
 
 
 @bp.get("/me/listings")
