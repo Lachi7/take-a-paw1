@@ -1,17 +1,14 @@
 # 🐾 Take A Paw - Pet Adoption Platform
-
 A Tinder-style pet adoption web application built with Flask, PostgreSQL, and modern CI/CD practices.
 
 ## 🚀 Features
-
-- **Tinder-style Swiping**: Swipe right to like pets, left to skip
-- **Compatibility Quiz**: Find pets that match your lifestyle  
-- **Favorites System**: Save pets you're interested in
-- **Admin Dashboard**: Manage pets and track adoptions
-- **Responsive Design**: Works on desktop and mobile
+- **Tinder-style Swiping**: Swipe right to like pets, left to skip.
+- **Compatibility Quiz**: Find pets that match your lifestyle.
+- **Favorites System**: Save pets you're interested in.
+- **Admin Dashboard**: Manage pets and track adoptions.
+- **Responsive Design**: Works on desktop and mobile.
 
 ## 🛠 Tech Stack
-
 - **Backend**: Flask, Python
 - **Database**: PostgreSQL (Neon)
 - **Frontend**: HTML, CSS, JavaScript, Jinja2
@@ -21,102 +18,105 @@ A Tinder-style pet adoption web application built with Flask, PostgreSQL, and mo
 
 ## 📦 Quick Start
 
-<<<<<<< HEAD
 ### 🌐 Production Environment
-<<<<<<< HEAD
-**Live Application:** [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)  
-**Health Monitor:** [https://take-a-paw.onrender.com/health](https://take-a-paw.onrender.com/health)  
-**API Status:** [https://take-a-paw.onrender.com/api/status](https://take-a-paw.onrender.com/api/status)
+- **Live Application**: [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)
+- **Health Monitor**: [https://take-a-paw.onrender.com/health](https://take-a-paw.onrender.com/health)
+- **API Status**: [https://take-a-paw.onrender.com/api/status](https://take-a-paw.onrender.com/api/status)
 
-=======
-**Live Application:** [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)  
->>>>>>> refactor/modular-backend
-
-## 🏗️ Architecture
-
+### 🏗️ Architecture
 ```
+
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   GitHub        │    │   GitHub Actions │    │   Render        │
 │   Repository    │───▶│   CI/CD Pipeline │───▶│   Production    │
-│                 │    │                  │    │   Deployment    │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                        │                        │
-         │                        │                        │
-         ▼                        ▼                        ▼
+│                        │                        │
+│                        │                        │
+▼                        ▼                        ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Code Changes  │    │   Auto Testing   │    │   Auto Deploy   │
 │   & Commits     │    │   & Building     │    │   & Scaling     │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-```
+
+````
 
 ## 🛠 Quick Start
 
 ### Prerequisites
 - Python 3.12+
-<<<<<<< HEAD
 - Docker
-=======
-- Docker 
->>>>>>> refactor/modular-backend
 - Git
 
 ### Local Development
 
-1. **Clone and Setup**
+1. **Clone and Setup**:
    ```bash
    git clone https://github.com/your-username/takeapaw.git
    cd takeapaw
-   ```
+2. **Virtual Environment**:
 
-2. **Virtual Environment**
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate  # Linux/Mac
    # OR
-<<<<<<< HEAD
-   .venv\Scripts\Activate.ps1   # Windows using powershel
-=======
-   .venv\Scripts\Activate.ps1   # Windows using powershell
->>>>>>> refactor/modular-backend
+   .venv\Scripts\Activate.ps1 # Windows using PowerShell
    ```
 
-3. **Install Dependencies**
+3. **Install Dependencies**:
+
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Run Application**
+4. **Run Application**:
+
    ```bash
    cd src
    python app.py
    ```
-   Visit: `http://localhost:5000`
+
+   Visit: [http://localhost:5000](http://localhost:5000)
 
 ### Docker Development
-```bash
-# Build image
-docker build -t takeapaw:latest .
 
-# Run container
-docker run -p 5000:5000 takeapaw:latest
+1. **Build image**:
 
-# Or with Docker Compose
-docker-compose up
-```
+   ```bash
+   docker build -t takeapaw:latest .
+   ```
 
-## 🧪 Testing
+2. **Run container**:
 
-```bash
-# Run all tests
-cd tests
-pytest test_app.py -v
+   ```bash
+   docker run -p 5000:5000 takeapaw:latest
+   ```
 
-# Run with coverage
-pytest --cov=src --cov-report=html
+3. **Or with Docker Compose**:
 
-# Specific test category
-pytest tests/test_app.py::test_health_endpoint -v
-```
+   ```bash
+   docker-compose up
+   ```
+
+### 🧪 Testing
+
+1. **Run all tests**:
+
+   ```bash
+   cd tests
+   pytest test_app.py -v
+   ```
+
+2. **Run with coverage**:
+
+   ```bash
+   pytest --cov=src --cov-report=html
+   ```
+
+3. **Specific test category**:
+
+   ```bash
+   pytest tests/test_app.py::test_health_endpoint -v
+   ```
 
 ## 📁 Project Structure
 
@@ -149,138 +149,182 @@ takeapaw/
 ## 🔌 API Endpoints
 
 ### Application Routes
-- `GET /` - Homepage with pet listings
-- `GET /search` - Advanced pet search
-- `GET /pet/<id>` - Individual pet profiles
-- `GET /adopt/<id>` - Adoption application forms
-- `GET /quiz` - Personality matching quiz
-- `GET /favorites` - User favorite pets
-- `GET /admin` - Administration dashboard
+
+* `GET /` - Homepage with pet listings
+* `GET /search` - Advanced pet search
+* `GET /pet/<id>` - Individual pet profiles
+* `GET /adopt/<id>` - Adoption application forms
+* `GET /quiz` - Personality matching quiz
+* `GET /favorites` - User favorite pets
+* `GET /admin` - Administration dashboard
 
 ### JSON APIs
-- `GET /api/pets` - All available pets (JSON)
-- `GET /api/status` - System health and API status
-- `GET /health` - Health check endpoint
-- `GET /debug` - System debugging information
+
+* `GET /api/pets` - All available pets (JSON)
+* `GET /api/status` - System health and API status
+* `GET /health` - Health check endpoint
+* `GET /debug` - System debugging information
 
 ## 🚀 Automated Deployment (CI/CD)
 
 ### Pipeline Flow
+
 1. **Code Push** → Trigger GitHub Actions
-2. **CI Pipeline** → Run automated tests (`pytest`)
+2. **CI Pipeline** → Run automated tests (pytest)
 3. **CD Pipeline** → Build Docker image → Push to GHCR
 4. **Auto-Deploy** → Render detects changes → Deploys automatically
 5. **Live Update** → Application updated in production
 
 ### Manual Trigger Demo
+
+To make a visible change for presentation:
+
 ```bash
-# Make a visible change for presentation
 echo "# Demo auto-deployment" >> demo.txt
 git add .
 git commit -m "demo: testing CI/CD pipeline"
 git push origin main
 ```
 
-## 👥 Admin Features
+## 🔐 Admin Panel
 
-Access `/admin` for comprehensive management:
-- **Adoption Requests** - Review and approve applications
-- **Pet Management** - Add/remove pets from platform
-- **Statistics** - View adoption metrics and platform usage
-- **User Management** - Monitor user activity and favorites
+Take A Paw includes a fully featured **Admin Panel** for managing the platform.
 
-**Demo Access:** Admin session is automatically enabled for demonstration.
+### Admin Login
+🔑 **Admin Login Page:**  
+https://take-a-paw.onrender.com/admin/login
+
+### Admin Features
+The admin dashboard allows you to:
+
+- Add, edit, and remove pets  
+- View user accounts  
+- Monitor adoption statistics  
+- Manage favorites and listings  
+- Access platform-wide metrics  
+- Moderate system activity  
+
+> ⚠️ Note: In demo mode, an admin session may be automatically enabled for easier access during testing.
 
 ## ⚙️ Configuration
 
 ### Environment Variables
-```env
-SECRET_KEY=your-secret-key-here
-FLASK_ENV=production
-CAT_API_KEY=your-cat-api-key
-DOG_API_KEY=your-dog-api-key
-```
+
+* `SECRET_KEY=your-secret-key-here`
+* `FLASK_ENV=production`
+* `CAT_API_KEY=your-cat-api-key`
+* `DOG_API_KEY=your-dog-api-key`
 
 ### Production Settings
-- **WSGI Server:** Gunicorn
-- **Process Manager:** Render
-- **Health Checks:** Automatic monitoring
-- **Logging:** Structured application logs
+
+* **WSGI Server**: Gunicorn
+* **Process Manager**: Render
+* **Health Checks**: Automatic monitoring
+* **Logging**: Structured application logs
 
 ## 🔒 Security Features
 
-- Non-root Docker user execution
-- Environment variable configuration
-- SQL injection prevention
-- XSS protection through template escaping
-- Secure headers configuration
+* Non-root Docker user execution
+* Environment variable configuration
+* SQL injection prevention
+* XSS protection through template escaping
+* Secure headers configuration
 
 ## 📊 Monitoring & Analytics
 
 ### Health Monitoring
-- **Internal:** Render application logs and metrics
-- **External:** UptimeRobot with 5-minute checks
-- **Custom:** `/health` endpoint for service status
+
+* **Internal**: Render application logs and metrics
+* **External**: UptimeRobot with 5-minute checks
+* **Custom**: `/health` endpoint for service status
 
 ### Performance Metrics
-- Response time tracking
-- Error rate monitoring
-- Uptime statistics
-- Deployment success rates
+
+* Response time tracking
+* Error rate monitoring
+* Uptime statistics
+* Deployment success rates
 
 ## 🚨 Rollback Procedures
 
 If deployment issues occur:
 
-1. **Access Render Dashboard** → Events tab
-2. **Select Stable Deployment** → Click "Rollback"
-3. **Confirm Action** → System reverts instantly
+1. Access Render Dashboard → **Events** tab
+2. Select Stable Deployment → **Click "Rollback"**
+3. Confirm Action → System reverts instantly
 4. **Auto-Deploy Disabled** → Prevents repeated issues
-5. **Re-enable After Fix** → Settings → Auto-Deploy → Yes
+5. Re-enable After Fix → Settings → Auto-Deploy → Yes
+
+## 👥 Collaborators
+
+This project was created and maintained by:
+
+- **Shahin Alakparov** – [GitHub Profile](https://github.com/shahin1717)
+- **Nazrin Aliyeva** – [GitHub Profile](https://github.com/Lachi7)
+- **Fidan Alizada** – [GitHub Profile](https://github.com/Fidannnnn)
+
+
 
 ## 🤝 Contributing
 
 We welcome contributions! Please see our workflow:
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/improvement`)
-3. **Commit** changes (`git commit -m 'Add some improvement'`)
-4. **Push** to branch (`git push origin feature/improvement`)
-5. **Open** a Pull Request
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/improvement`
+3. **Commit changes**: `git commit -m 'Add some improvement'`
+4. **Push to branch**: `git push origin feature/improvement`
+5. **Open a Pull Request**
 
 ### Development Standards
-```bash
-# Run tests before committing
-pytest
 
-# Check code quality
-flake8 src/ tests/
+* **Run tests before committing**:
 
-# Format code
-black src/ tests/
-```
+  ```bash
+  pytest
+  ```
+
+* **Check code quality**:
+
+  ```bash
+  flake8 src/ tests/
+  ```
+
+* **Format code**:
+
+  ```bash
+  black src/ tests/
+  ```
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-**Docker Build Failures**
-```bash
-# Clean build
-docker system prune
-docker build --no-cache -t takeapaw:latest .
-```
+#### Docker Build Failures
 
-**Port Conflicts**
-=======
->>>>>>> new-branch
+* Clean build:
+
+  ```bash
+  docker system prune
+  docker build --no-cache -t takeapaw:latest .
+  ```
+
+#### Port Conflicts
+
+* Resolve conflicts if port 5000 is in use.
+
+### Development
+
 ```bash
-# Development
 git clone https://github.com/your-username/take-a-paw.git
 cd take-a-paw
 pip install -r requirements.txt
 cd src && python run.py
+```
 
-# Docker
+### Docker
+
+```bash
 docker build -t takeapaw .
 docker run -p 5000:5000 takeapaw
+```
+
