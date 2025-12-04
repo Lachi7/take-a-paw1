@@ -34,7 +34,6 @@ header {
   font-weight: 500;
 }
 
-/* Navbar links hover effect */
 .navbar .nav-links li a,
 .navbar .nav-links li .linklike {
     transition: transform 0.2s ease, color 0.2s ease;
@@ -50,7 +49,6 @@ header {
   display: flex;
   gap: 1rem;
 }
-/* Navbar Logout button styling */
 .navbar .linklike[type="submit"] {
     border: none;
     color: #ff8c00;
@@ -61,7 +59,7 @@ header {
 }
 
 .logo {
-  height: 64px;      /* or 24px, depends on your design */
+  height: 64px;     
   width: 64px;
   vertical-align: middle;
   margin-right: 6px;
@@ -277,17 +275,16 @@ h2 { margin-bottom: 1rem; }
 }
 
 .yes-btn {
-  background: #4caf50;  /* Green for Yes */
+  background: #4caf50; 
   color: #fff;
 }
 
 .no-btn {
-  background: #f44336;  /* Red for No */
+  background: #f44336; 
   color: #fff;
 }
 
 
-/* Swipe Interface */
 .swipe-interface {
   position: relative;
   max-width: 400px;
@@ -397,7 +394,6 @@ h2 { margin-bottom: 1rem; }
   color: white;
 }
 
-/* Swipe decision overlays */
 .decision-overlay {
   position: absolute;
   top: 50px;
@@ -428,7 +424,6 @@ h2 { margin-bottom: 1rem; }
   transform: rotate(-15deg);
 }
 
-/* Empty state */
 .swipe-empty {
   text-align: center;
   padding: 3rem;
@@ -443,7 +438,6 @@ h2 { margin-bottom: 1rem; }
   color: #666;
 }
 
-/* Progress indicator */
 .swipe-progress {
   text-align: center;
   margin: 1rem 0;
@@ -451,7 +445,6 @@ h2 { margin-bottom: 1rem; }
   font-size: 0.9rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .swipe-interface {
     height: 450px;

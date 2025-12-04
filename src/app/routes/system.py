@@ -3,9 +3,6 @@ from ..models import Pet, User
 
 bp = Blueprint("system", __name__)
 
-# --------------------------
-# 1️⃣ Basic health check
-# --------------------------
 @bp.get("/health")
 def health():
     """
@@ -15,9 +12,6 @@ def health():
     return jsonify({"status": "ok", "service": "take-a-paw"}), 200
 
 
-# --------------------------
-# 2️⃣ API status check
-# --------------------------
 @bp.get("/api/status")
 def api_status():
     """
@@ -33,7 +27,7 @@ def api_status():
 
     return jsonify({
         "status": "ok",
-        "cat_api_working": True,   # placeholder until external API integration
+        "cat_api_working": True,
         "dog_api_working": True,
         "pets_in_db": pets_count,
         "users_in_db": users_count,
@@ -41,9 +35,6 @@ def api_status():
     }), 200
 
 
-# --------------------------
-# 3️⃣ Debug info
-# --------------------------
 @bp.get("/debug")
 def debug():
     """
@@ -68,16 +59,13 @@ def debug():
     }), 200
 
 
-# --------------------------
-# 4️⃣ DB-level health metrics
-# --------------------------
 @bp.get("/health/db")
 def health_db():
     """
     Returns counts of key entities to confirm DB connectivity.
     """
     try:
-        from ..models import Favorite  # import optional table dynamically
+        from ..models import Favorite 
         fav_count = Favorite.query.count()
     except Exception:
         fav_count = 0

@@ -7,7 +7,18 @@ from ..models import Favorite, Pet, User
 
 bp = Blueprint("pets", __name__)
 
+
 def _resolve_contact(p: Pet):
+    """
+    Decide which contact details to show for a given pet.
+
+    Rules:
+    - Prefer per-listing overrides (contact_email_override / contact_phone_override).
+    - Otherwise, use the owner's email/phone.
+    - Only show contact info if the owner allowed public_contact AND at least one
+      of email/phone exists.
+    - If not visible, return (None, None, False).
+    """
     owner = p.owner
     owner_public = owner.public_contact if owner else False
 
@@ -24,6 +35,14 @@ def _resolve_contact(p: Pet):
 
 
 def serialize_pet(p: Pet):
+    """
+    Convert a Pet ORM object into a dict suitable for JSON/API responses.
+
+    Includes:
+    - Basic pet info (name, species, age, etc.)
+    - Contact info (resolved via _resolve_contact)
+    - Flags like adopted, public_contact, and contact_visible.
+    """
     email, phone, contact_visible = _resolve_contact(p)
     return {
         "id": p.id,
@@ -41,33 +60,57 @@ def serialize_pet(p: Pet):
         "public_contact": p.public_contact,
         "contact_email": email,
         "contact_phone": phone,
-        "contact_visible": contact_visible,  # important!
+        "contact_visible": contact_visible,
         "created_at": p.created_at.isoformat() if p.created_at else None,
     }
 
 
 @bp.get("/pets")
 def list_pets():
+    """
+    Return a JSON list of all non-adopted pets, ordered by newest first.
+    """
     pets = Pet.query.filter_by(adopted=False).order_by(Pet.created_at.desc()).all()
     return jsonify([serialize_pet(p) for p in pets])
 
+
 @bp.get("/pets/<int:pet_id>")
 def pet_detail(pet_id: int):
+    """
+    Return JSON details for a single pet by id.
+
+    - If the pet does not exist or is adopted, return 404 JSON.
+    """
     p = Pet.query.get(pet_id)
     if not p or p.adopted:
         return jsonify({"error": "not found"}), 404
     return jsonify(serialize_pet(p))
 
+
 @bp.get("/pets/search")
 def search():
-    species  = (request.args.get("species")  or "").strip().lower()
-    breed    = (request.args.get("breed")    or "").strip().lower()
+    """
+    JSON API search for pets.
+
+    Filters:
+    - species: exact match (case-insensitive).
+    - breed: contains substring (case-insensitive).
+    - location: contains substring (case-insensitive).
+
+    Only returns non-adopted pets.
+    """
+    species = (request.args.get("species") or "").strip().lower()
+    breed = (request.args.get("breed") or "").strip().lower()
     location = (request.args.get("location") or "").strip().lower()
 
     q = Pet.query.filter_by(adopted=False)
-    if species:  q = q.filter(Pet.species.ilike(species))
-    if breed:    q = q.filter(Pet.breed.ilike(f"%{breed}%"))
-    if location: q = q.filter(Pet.location.ilike(f"%{location}%"))
+
+    if species:
+        q = q.filter(Pet.species.ilike(species))
+    if breed:
+        q = q.filter(Pet.breed.ilike(f"%{breed}%"))
+    if location:
+        q = q.filter(Pet.location.ilike(f"%{location}%"))
 
     pets = q.order_by(Pet.created_at.desc()).all()
     return jsonify([serialize_pet(p) for p in pets])
@@ -75,7 +118,17 @@ def search():
 
 @bp.post("/pets")
 def create_listing():
-    import cloudinary.uploader  # required
+    """
+    Create a new pet listing (HTML form POST).
+
+    Flow:
+    - Require logged-in user; otherwise redirect to login.
+    - Validate required fields + image.
+    - Upload image to Cloudinary.
+    - Create Pet row with extra adoption fields (home_type, activity_level, etc.).
+    - Redirect to the newly created pet detail page (or provided 'next' URL).
+    """
+    import cloudinary.uploader
 
     user_id = session.get("user_id")
     if not user_id:
@@ -85,11 +138,9 @@ def create_listing():
     data = request.form
     image_file = request.files.get("image")
 
-    # required fields
     required = ["name", "species", "breed", "age", "gender", "location", "description"]
     missing = [k for k in required if not (data.get(k) or "").strip()]
 
-    # 🔥 Check image upload as mandatory
     if not image_file or image_file.filename == "":
         missing.append("image")
 
@@ -97,18 +148,18 @@ def create_listing():
         flash(f"Missing fields: {', '.join(missing)}", "error")
         return redirect(url_for("pets.add_pet_form"))
 
-    # helper
     def clean(key):
+        """
+        Helper for optional text fields:
+        - Strip whitespace and convert empty string to None.
+        """
         value = (data.get(key) or "").strip()
         return value or None
 
-    # -----------------------------
-    # 🔥 Cloudinary image upload (REQUIRED)
-    # -----------------------------
     try:
         uploaded = cloudinary.uploader.upload(
             image_file,
-            folder="take-a-paw/pets"
+            folder="take-a-paw/pets",
         )
         image_url = uploaded["secure_url"]
     except Exception as e:
@@ -116,9 +167,6 @@ def create_listing():
         flash("Image upload failed. Please try again.", "error")
         return redirect(url_for("pets.add_pet_form"))
 
-    # -----------------------------
-    # Create pet entry
-    # -----------------------------
     pet = Pet(
         name=data["name"].strip(),
         species=data["species"].strip().capitalize(),
@@ -127,7 +175,7 @@ def create_listing():
         gender=data["gender"].strip(),
         location=data["location"].strip(),
         description=data["description"].strip(),
-        image=image_url,  # always present now!
+        image=image_url,
         adopted=False,
         source="user",
         owner_id=user_id,
@@ -152,18 +200,33 @@ def create_listing():
 @bp.get("/me/listings")
 @login_required
 def my_listings_page():
+    """
+    Show the HTML page with all pets listed by the current user.
+
+    - Requires login.
+    - Uses serialize_pet so that templates can rely on a consistent structure.
+    """
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to view your listings.")
         return redirect(url_for("pets.home_index"))
+
     pets = Pet.query.filter_by(owner_id=user_id).order_by(Pet.created_at.desc()).all()
-    # Reuse serializer if you prefer; passing ORM objects is fine for the fields we use
     return render_template("my_listings.html", pets=[serialize_pet(p) for p in pets])
 
 
-# toggle favorite
 @bp.post("/pets/<int:pet_id>/favorite")
 def toggle_favorite(pet_id: int):
+    """
+    Add or remove a pet from the current user's favorites.
+
+    Behavior:
+    - Require login; otherwise redirect to login.
+    - If user record is missing for some reason, create a basic one (fallback).
+    - If pet is invalid or adopted, show error and redirect.
+    - If a Favorite exists, delete it; otherwise create one.
+    - Flash success or error and redirect back to 'next' or Referer or home.
+    """
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to use favorites.", "error")
@@ -171,7 +234,6 @@ def toggle_favorite(pet_id: int):
 
     user = User.query.get(user_id)
     if not user:
-        # basic user record
         user = User(id=user_id, display_name=user_id)
         db.session.add(user)
         db.session.commit()
@@ -184,16 +246,14 @@ def toggle_favorite(pet_id: int):
         return redirect(next_url)
 
     fav = Favorite.query.filter_by(user_id=user_id, pet_id=pet_id).first()
-    
+
     if fav:
-        # Remove from favorites
         db.session.delete(fav)
         action = "removed from"
     else:
-        # Add to favorites
         db.session.add(Favorite(user_id=user_id, pet_id=pet_id))
         action = "added to"
-    
+
     try:
         db.session.commit()
         flash(f"Pet {action} favorites.", "success")
@@ -202,12 +262,25 @@ def toggle_favorite(pet_id: int):
         flash("Error updating favorites. Please try again.", "error")
         print(f"Favorite error: {e}")
 
-    next_url = request.form.get("next") or request.headers.get("Referer") or url_for("pets.home_index")
+    next_url = (
+        request.form.get("next")
+        or request.headers.get("Referer")
+        or url_for("pets.home_index")
+    )
     return redirect(next_url)
 
 
 @bp.post("/pets/<int:pet_id>/delete")
 def delete_pet(pet_id: int):
+    """
+    Allow the owner of a pet to delete their listing.
+
+    Steps:
+    - Require login; otherwise redirect to login.
+    - Check that the pet exists.
+    - Check that the current user is the owner (403 if not).
+    - Delete the pet and redirect to the "my listings" page.
+    """
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to delete a pet.", "error")
@@ -219,7 +292,7 @@ def delete_pet(pet_id: int):
         return redirect(url_for("pets.home_index"))
 
     if pet.owner_id != user_id:
-        abort(403)  # Forbidden
+        abort(403)
 
     try:
         db.session.delete(pet)
@@ -233,27 +306,38 @@ def delete_pet(pet_id: int):
     return redirect(url_for("pets.my_listings_page"))
 
 
-# my favorites
-# existing JSON API (keep it!)
 @bp.get("/me/favorites")
 def my_favorites_json():
+    """
+    Return a JSON list of the current user's favorite pets (non-adopted only).
+
+    - If the user is not logged in or has no favorites, returns an empty list.
+    """
     user_id = session.get("user_id")
     if not user_id:
         return jsonify([])
+
     favs = Favorite.query.filter_by(user_id=user_id).all()
     pet_ids = [f.pet_id for f in favs]
     if not pet_ids:
         return jsonify([])
+
     pets = Pet.query.filter(Pet.id.in_(pet_ids), Pet.adopted == False).all()
     return jsonify([serialize_pet(p) for p in pets])
 
-# new template page
+
 @bp.get("/favorites")
 def favorites_page():
+    """
+    Render an HTML page with the current user's favorite pets.
+
+    - Requires login; otherwise redirect to home with a flash message.
+    """
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to see favorites.")
         return redirect(url_for("pets.home_index"))
+
     favs = Favorite.query.filter_by(user_id=user_id).all()
     ids = [f.pet_id for f in favs]
     pets = Pet.query.filter(Pet.id.in_(ids), Pet.adopted == False).all() if ids else []
@@ -262,20 +346,29 @@ def favorites_page():
 
 @bp.get("/")
 def home_index():
+    """
+    Main homepage of the site.
+
+    - Shows all non-adopted pets, newest first.
+    """
     pets = Pet.query.filter_by(adopted=False).order_by(Pet.created_at.desc()).all()
     return render_template("index.html", pets=pets)
 
 
-
 @bp.get("/search")
 def home_search():
-    species  = (request.args.get("species")  or "").strip()
-    breed    = (request.args.get("breed")    or "").strip()
+    """
+    HTML search version for the homepage.
+
+    - Same filters as /pets/search but renders index.html instead of JSON.
+    """
+    species = (request.args.get("species") or "").strip()
+    breed = (request.args.get("breed") or "").strip()
     location = (request.args.get("location") or "").strip()
 
     q = Pet.query.filter_by(adopted=False)
+
     if species:
-        # allow partial, case-insensitive
         q = q.filter(Pet.species.ilike(f"%{species}%"))
     if breed:
         q = q.filter(Pet.breed.ilike(f"%{breed}%"))
@@ -285,8 +378,15 @@ def home_search():
     pets = q.order_by(Pet.created_at.desc()).all()
     return render_template("index.html", pets=[serialize_pet(p) for p in pets])
 
+
 @bp.get("/pet/<int:pet_id>")
 def home_pet_detail(pet_id: int):
+    """
+    Render the HTML detail page for a single pet.
+
+    - If pet is missing or adopted, show a 404 template.
+    - Uses _resolve_contact to decide what contact details to show.
+    """
     p = Pet.query.get(pet_id)
     if not p or p.adopted:
         return render_template("404.html"), 404
@@ -297,16 +397,19 @@ def home_pet_detail(pet_id: int):
         pet=p,
         contact_email=email,
         contact_phone=phone,
-        contact_visible=contact_visible  # use this in template
+        contact_visible=contact_visible,
     )
-
 
 
 @bp.get("/add-pet")
 @login_required
 def add_pet_form():
+    """
+    Show the form for creating a new pet listing.
+
+    - Requires login; otherwise redirects to home.
+    """
     if not session.get("user_id"):
-        # optional: force login to list
         flash("Please log in to add a pet.")
         return redirect(url_for("pets.home_index"))
     return render_template("add_pet.html")
