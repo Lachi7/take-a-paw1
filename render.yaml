@@ -1,13 +1,11 @@
 services:
   - type: web
     name: takeapaw
-    env: python
+    runtime: python3
     plan: free
     region: frankfurt
-    buildCommand: |
-      pip install -r requirements.txt
-      cd src && python seed.py
-    startCommand: cd src && gunicorn run:app
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -c gunicorn_config.py src.run:app
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -15,5 +13,11 @@ services:
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
-    healthCheckPath: /health
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
     autoDeploy: true
+    healthCheckPath: /health
