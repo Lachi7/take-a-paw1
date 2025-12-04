@@ -72,31 +72,53 @@ def search():
     pets = q.order_by(Pet.created_at.desc()).all()
     return jsonify([serialize_pet(p) for p in pets])
 
+
 @bp.post("/pets")
 def create_listing():
+    import cloudinary.uploader  # required
+
     user_id = session.get("user_id")
     if not user_id:
-        if request.is_json:
-            return jsonify({"ok": False, "error": "login required"}), 401
         flash("Please log in to add a pet.", "error")
         return redirect(url_for("auth.login_form", next=url_for("pets.add_pet_form")))
 
-    data = request.get_json(silent=True) or request.form
+    data = request.form
+    image_file = request.files.get("image")
 
-    # required basic fields
+    # required fields
     required = ["name", "species", "breed", "age", "gender", "location", "description"]
     missing = [k for k in required if not (data.get(k) or "").strip()]
+
+    # 🔥 Check image upload as mandatory
+    if not image_file or image_file.filename == "":
+        missing.append("image")
+
     if missing:
-        if request.is_json:
-            return jsonify({"ok": False, "error": f"missing fields: {', '.join(missing)}"}), 400
         flash(f"Missing fields: {', '.join(missing)}", "error")
         return redirect(url_for("pets.add_pet_form"))
 
-    # helper: normalize empty strings to None
+    # helper
     def clean(key):
         value = (data.get(key) or "").strip()
         return value or None
 
+    # -----------------------------
+    # 🔥 Cloudinary image upload (REQUIRED)
+    # -----------------------------
+    try:
+        uploaded = cloudinary.uploader.upload(
+            image_file,
+            folder="take-a-paw/pets"
+        )
+        image_url = uploaded["secure_url"]
+    except Exception as e:
+        print("Cloudinary upload error:", e)
+        flash("Image upload failed. Please try again.", "error")
+        return redirect(url_for("pets.add_pet_form"))
+
+    # -----------------------------
+    # Create pet entry
+    # -----------------------------
     pet = Pet(
         name=data["name"].strip(),
         species=data["species"].strip().capitalize(),
@@ -105,15 +127,13 @@ def create_listing():
         gender=data["gender"].strip(),
         location=data["location"].strip(),
         description=data["description"].strip(),
-        image=(data.get("image") or "https://placehold.co/900x600?text=Pet").strip(),
+        image=image_url,  # always present now!
         adopted=False,
         source="user",
         owner_id=user_id,
         contact_email_override=clean("contact_email"),
         contact_phone_override=clean("contact_phone"),
         public_contact=bool(data.get("public_contact", True)),
-
-        # 🔽 quiz-related fields
         home_type=clean("home_type"),
         activity_level=clean("activity_level"),
         experience=clean("experience"),
@@ -124,19 +144,9 @@ def create_listing():
     db.session.add(pet)
     db.session.commit()
 
-    # Form submissions: redirect
-    if not request.is_json:
-        next_url = request.form.get("next")
-        if next_url:
-            flash(f"Your listing “{pet.name}” is live!", "success")
-            return redirect(next_url)
-
-        flash(f"Your listing “{pet.name}” is live!", "success")
-        return redirect(url_for("pets.home_pet_detail", pet_id=pet.id))
-
-    # JSON clients
-    return jsonify({"ok": True, "pet": serialize_pet(pet)}), 201
-
+    flash(f"Your listing “{pet.name}” is live!", "success")
+    next_url = request.form.get("next")
+    return redirect(next_url or url_for("pets.home_pet_detail", pet_id=pet.id))
 
 
 @bp.get("/me/listings")

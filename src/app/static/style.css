@@ -60,6 +60,13 @@ header {
     transition: background 0.2s ease;
 }
 
+.logo {
+  height: 64px;      /* or 24px, depends on your design */
+  width: 64px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 .btn.danger {
   background-color: #d9534f;
   color: white;

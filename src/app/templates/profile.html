@@ -12,22 +12,22 @@ block head %}
   >
     <div class="form-group">
       <label>Username:</label>
-      <span>{{ user.username }}</span>
+      <span id="username-id">{{ user.username }}</span>
     </div>
 
     <div class="form-group">
       <label>Display Name:</label>
-      <input name="display_name" value="{{ user.display_name }}" />
+      <input name="display_name" type="text" value="{{ user.display_name }}" placeholder="But... you should have one" />
     </div>
 
     <div class="form-group">
       <label>Email:</label>
-      <input name="email" value="{{ user.email }}" />
+      <input type="text" name="email" value="{{ user.email or '' }}" placeholder="Enter your email">
     </div>
 
     <div class="form-group">
       <label>Phone:</label>
-      <input name="phone" value="{{ user.phone }}" />
+      <input name="phone" type="text" value="{{ user.phone or '' }}" placeholder="Enter your phone number" />
     </div>
 
     <div class="form-group">

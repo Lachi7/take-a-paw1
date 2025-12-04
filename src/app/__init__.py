@@ -2,6 +2,7 @@
 import os
 from flask import Flask
 from dotenv import load_dotenv
+
 #start of flask app factory
 def create_app(test_config=None):
     load_dotenv()
@@ -28,7 +29,13 @@ def create_app(test_config=None):
     # DB - pass test_config if provided
     from .db import init_db
     init_db(flask_app, test_config)
-
+    import cloudinary
+    cloudinary.config(
+        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.getenv("CLOUDINARY_API_KEY"),
+        api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+        secure=True
+    )
     # blueprints
     from .routes.auth import bp as auth_bp
     from .routes.pets import bp as pets_bp

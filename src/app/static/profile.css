@@ -24,6 +24,14 @@
   font-weight: 600;
   margin-bottom: 0.3rem;
 }
+.profile-form #username-id {
+  width: 100%;
+  padding: 0.1rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
 
 .profile-form input[type="text"],
 .profile-form input[type="email"] {

@@ -4,7 +4,7 @@
 {% block content %}
 <h2>Add a Pet for Adoption</h2>
 
-<form class="form" method="post" action="/pets">
+<form class="form" method="post" action="/pets" enctype="multipart/form-data">
   <input type="hidden" name="next" value="/me/listings" />
 
   <!-- Basic pet info -->
@@ -47,7 +47,6 @@
     </label>
   </div>
 
-  <!-- 🔽 New: quiz-related matching info -->
   <h3>Matchmaking details (used by the quiz)</h3>
   <p class="muted">
     This helps our matching quiz suggest this pet to the right adopters.
@@ -110,12 +109,10 @@
     Description
     <textarea name="description" rows="4" required></textarea>
   </label>
-
-  <label>
-    Image URL (optional)
-    <input type="url" name="image" placeholder="https://..." />
-  </label>
-
+<label>
+  Upload Pet Image
+  <input type="file" name="image" accept="image/*" required />
+</label>
   <br />
   <p>
     <em>
