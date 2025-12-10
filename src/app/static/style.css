@@ -343,6 +343,9 @@ h2 { margin-bottom: 1rem; }
   padding: .45rem .6rem; border: 1px solid var(--border); border-radius: 8px;
 }
 .btn.small { padding: .35rem .7rem; font-size: .85rem; ; }
+.nav-search .btn {
+    margin-top: 1.5px;   /* adjust value until perfect */
+}
 .pet-actions {
   display: flex;
   justify-content: space-between;
