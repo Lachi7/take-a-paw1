@@ -345,12 +345,8 @@ def favorites_page():
 
 @bp.get("/")
 def home_index():
-    pets = (
-        Pet.query
-        .filter_by(adopted=False)
-        .order_by(func.rand())     # RANDOM ORDER HERE
-        .all()
-    )
+    pets = Pet.query.filter_by(adopted=False).order_by(func.random()).all()
+
     return render_template("index.html", pets=pets)
 
 
