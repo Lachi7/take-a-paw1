@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %}My Listings — Take A Paw{% endblock
 %} {% block content %}
-<h2>My Listings</h2>
 {% if pets %}
+<h2>My Listings</h2>
 <section class="pet-list">
   {% for pet in pets %}
   <div class="pet-card">
@@ -20,6 +20,12 @@
   {% endfor %}
 </section>
 {% else %}
-<p>You haven’t listed any pets yet.</p>
-<p><a class="btn" href="/add-pet">Add your first listing</a></p>
-{% endif %} {% endblock %}
+<div class="empty-state">
+    <img src="/static/nolisting.png" alt="No pets" class="empty-illustration">
+
+    <h3>No furry friends listed yet 🐾</h3>
+    <p>You haven’t listed any pets yet. Start by adding your first one!</p>
+
+    <a class="btn outline" href="/add-pet">Add Your First Listing</a>
+</div>
+{% endif %}{% endblock %}

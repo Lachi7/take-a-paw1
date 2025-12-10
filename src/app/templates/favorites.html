@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %}My Favorites — Take A Paw{% endblock
 %} {% block content %}
-<h2>My Favorites</h2>
 {% if pets %}
+<h2>My Favorites</h2>
 <section class="pet-list">
   {% for pet in pets %}
   <div class="pet-card">
@@ -17,6 +17,14 @@
   {% endfor %}
 </section>
 {% else %}
-<p>No favorites yet.</p>
-<p>Browse the <a href="/">home page</a> and tap “♡ Favorite”.</p>
+<div class="empty-state">
+    <img src="/static/nofavorites.jpg" alt="No pets" class="empty-illustration">
+
+  <h3>No favorites yet 🐾</h3>
+  <p>
+    You haven’t favorited any pets so far.<br>
+    Browse the home page and tap <strong>“♡ Favorite”</strong> on pets you like.
+  </p>
+  <a href="/" class="btn outline">Browse Pets</a>
+</div>
 {% endif %} {% endblock %}

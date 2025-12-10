@@ -131,6 +131,55 @@ main {
     transform: translateY(-2px);
 }
 
+.btn.primary {
+    background: #7c4dff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* Hover */
+.btn.primary:hover {
+    background: #6a3de6;
+    box-shadow: 0 4px 10px rgba(124, 77, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    max-width: 480px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.empty-state h3 {
+    font-size: 1.6rem;
+    margin: 1rem 0 0.5rem;
+    color: #444;
+}
+
+.empty-state p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.empty-illustration {
+    width: 160px;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+
 /* Active favorited state button */
 .favorited {
     color: red !important;
