@@ -1,5 +1,6 @@
 # app/routes/pets.py
 from flask import Blueprint, flash, jsonify, redirect, request, session, render_template, url_for, abort
+from sqlalchemy.sql import func
 
 from app.routes.auth_utils import login_required
 from ..db import db
@@ -64,15 +65,13 @@ def serialize_pet(p: Pet):
         "created_at": p.created_at.isoformat() if p.created_at else None,
     }
 
-
 @bp.get("/pets")
 def list_pets():
     """
-    Return a JSON list of all non-adopted pets, ordered by newest first.
+    Return a JSON list of all non-adopted pets in random order.
     """
     pets = Pet.query.filter_by(adopted=False).order_by(Pet.created_at.desc()).all()
     return jsonify([serialize_pet(p) for p in pets])
-
 
 @bp.get("/pets/<int:pet_id>")
 def pet_detail(pet_id: int):
@@ -346,12 +345,12 @@ def favorites_page():
 
 @bp.get("/")
 def home_index():
-    """
-    Main homepage of the site.
-
-    - Shows all non-adopted pets, newest first.
-    """
-    pets = Pet.query.filter_by(adopted=False).order_by(Pet.created_at.desc()).all()
+    pets = (
+        Pet.query
+        .filter_by(adopted=False)
+        .order_by(func.rand())     # RANDOM ORDER HERE
+        .all()
+    )
     return render_template("index.html", pets=pets)
 
 
