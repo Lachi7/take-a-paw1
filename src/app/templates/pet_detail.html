@@ -39,11 +39,17 @@ Take A Paw{% endblock %} {% block content %}
     </div>
 
     <div class="actions-row">
-      <form method="post" action="/pets/{{ pet.id }}/favorite">
-        <input type="hidden" name="next" value="{{ request.path }}" />
-        <button class="btn outline" type="submit">♡ Favorite</button>
-      </form>
-
+  {% if is_favorited %}
+<form method="post" action="/pets/{{ pet.id }}/favorite">
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <button class="btn outline favorited" type="submit">♥ Unfavorite</button>
+</form>
+{% else %}
+<form method="post" action="/pets/{{ pet.id }}/favorite">
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <button class="btn outline" type="submit">♡ Favorite</button>
+</form>
+{% endif %}
       {% if session.get('user_id') == pet.owner_id %}
       <form
         method="post"

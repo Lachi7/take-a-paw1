@@ -381,25 +381,27 @@ def home_search():
 
 @bp.get("/pet/<int:pet_id>")
 def home_pet_detail(pet_id: int):
-    """
-    Render the HTML detail page for a single pet.
-
-    - If pet is missing or adopted, show a 404 template.
-    - Uses _resolve_contact to decide what contact details to show.
-    """
     p = Pet.query.get(pet_id)
     if not p or p.adopted:
         return render_template("404.html"), 404
 
+    user_id = session.get("user_id")
+    is_favorited = False
+    if user_id:
+        is_favorited = Favorite.query.filter_by(
+            user_id=user_id, pet_id=pet_id
+        ).first() is not None
+
     email, phone, contact_visible = _resolve_contact(p)
+
     return render_template(
         "pet_detail.html",
         pet=p,
         contact_email=email,
         contact_phone=phone,
         contact_visible=contact_visible,
+        is_favorited=is_favorited,
     )
-
 
 @bp.get("/add-pet")
 @login_required
