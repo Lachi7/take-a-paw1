@@ -15,7 +15,6 @@ def init_db(app, test_config=None):
         if not database_url:
             raise RuntimeError("❌ DATABASE_URL is not set in .env")
 
-        print(f"✅ Using MySQL database: {database_url}")
 
         app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 
