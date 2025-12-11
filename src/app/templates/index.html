@@ -3,8 +3,8 @@
 <div class="swipe-section">
   
   <div class="swipe-interface" id="swipeContainer">
-    {% if pets %} {% for pet in pets %}
     <p class="swipe-progress" id="progress">Swipe left for No, right for Yes</p>
+    {% if pets %} {% for pet in pets %}
     <div
       class="swipe-card"
       data-pet-id="{{ pet.id }}"
