@@ -1,6 +1,22 @@
 # 🐾 Take A Paw - Pet Adoption Platform
 A Tinder-style pet adoption web application built with Flask, PostgreSQL, and modern CI/CD practices.
 
+## 📋 Table of Contents
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Production Environment](#-production-environment)
+- [Architecture](#-architecture)
+- [Quick Start](#-quick-start)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+- [API Endpoints](#-api-endpoints)
+- [CI/CD Pipeline](#-cicd-pipeline)
+- [Admin Panel](#-admin-panel)
+- [Monitoring & Rollback](#-monitoring--rollback)
+- [Collaborators](#-collaborators)
+- [Contributing](#-contributing)
+- [Troubleshooting](#-troubleshooting)
+ 
 ## 🚀 Features
 - **Tinder-style Swiping**: Swipe right to like pets, left to skip.
 - **Compatibility Quiz**: Find pets that match your lifestyle.
@@ -15,8 +31,6 @@ A Tinder-style pet adoption web application built with Flask, PostgreSQL, and mo
 - **Containerization**: Docker
 - **CI/CD**: GitHub Actions
 - **Deployment**: Render
-
-## 📦 Quick Start
 
 ### 🌐 Production Environment
 - **Live Application**: [https://take-a-paw.onrender.com](https://take-a-paw.onrender.com)
@@ -52,7 +66,7 @@ A Tinder-style pet adoption web application built with Flask, PostgreSQL, and mo
 1. **Clone and Setup**:
    ```bash
    git clone https://github.com/your-username/takeapaw.git
-   cd takeapaw
+   cd take-a-paw1
 2. **Virtual Environment**:
 
    ```bash
@@ -68,34 +82,55 @@ A Tinder-style pet adoption web application built with Flask, PostgreSQL, and mo
    pip install -r requirements.txt
    ```
 
-4. **Run Application**:
+4. **Set up environment variables:**
+```bash
+   # Create .env file
+   cat > .env << EOF
+   DATABASE_URL=postgresql://user:pass@localhost:5432/takeapaw
+   SECRET_KEY=your-secret-key-here
+   CLOUDINARY_CLOUD_NAME=your-cloudinary-name
+   CLOUDINARY_API_KEY=your-cloudinary-key
+   CLOUDINARY_API_SECRET=your-cloudinary-secret
+   EOF
+```
 
-   ```bash
+5. **Initialize database:**
+```bash
    cd src
-   python app.py
-   ```
+   python run.py  # Creates tables on first run
+   
+   # Optional: Seed with sample data
+   python seed.py
+```
 
+6. **Run application:**
+```bash
+   python run.py
+```
    Visit: [http://localhost:5000](http://localhost:5000)
 
 ### Docker Development
 
-1. **Build image**:
-
-   ```bash
+1. **Build image:**
+```bash
    docker build -t takeapaw:latest .
-   ```
+```
 
-2. **Run container**:
+2. **Run container:**
+```bash
+   docker run -p 5000:5000 \
+     -e DATABASE_URL="your-db-url" \
+     -e SECRET_KEY="your-secret" \
+     -e CLOUDINARY_CLOUD_NAME="your-cloud-name" \
+     -e CLOUDINARY_API_KEY="your-api-key" \
+     -e CLOUDINARY_API_SECRET="your-api-secret" \
+     takeapaw:latest
+```
 
-   ```bash
-   docker run -p 5000:5000 takeapaw:latest
-   ```
-
-3. **Or with Docker Compose**:
-
-   ```bash
+3. **Or use docker-compose (if you have render.yaml configured):**
+```bash
    docker-compose up
-   ```
+```
 
 ### 🧪 Testing
 
@@ -117,7 +152,7 @@ A Tinder-style pet adoption web application built with Flask, PostgreSQL, and mo
    ```bash
    pytest tests/test_app.py::test_health_endpoint -v
    ```
-
+   
 ## 📁 Project Structure
 
 ```
@@ -126,22 +161,34 @@ takeapaw/
 │   ├── ci.yml                  # Continuous Integration
 │   └── cd.yml                  # Continuous Deployment
 ├── src/                        # Application Source
-│   ├── static/
-│   │   └── style.css           # Styling
-│   ├── templates/              # Jinja2 Templates
-│   │   ├── base.html           # Base Layout
-│   │   ├── index.html          # Homepage
-│   │   ├── pet_detail.html     # Pet Profiles
-│   │   ├── adopt_form.html     # Adoption Forms
-│   │   ├── quiz.html           # Matching Quiz
-│   │   ├── admin.html          # Admin Dashboard
-│   │   └── ...                 # Other Templates
-│   ├── app.py                  # Flask Application
-│   └── requirements.txt        # Dependencies
+│   ├── app/
+│   │   ├── routes/
+│   │   │   └── admin.py
+│   │   │   └── auth.py
+│   │   │   └── auth_utils.py
+│   │   │   └── pets.py
+│   │   │   └── quiz.py
+│   │   │   └── system.py
+│   │   ├── static/
+│   │   │   └── style.css           # Styling
+│   │   │   └── profile.css
+│   │   ├── templates/              # Jinja2 Templates
+│   │   │   ├── base.html           # Base Layout
+│   │   │   ├── index.html          # Homepage
+│   │   │   ├── pet_detail.html     # Pet Profiles
+│   │   │   ├── quiz.html           # Matching Quiz
+│   │   │   ├── admin.html          # Admin Dashboard
+│   │   │   └── ...                 # Other Templates
+│   │   ├── __init__.py              
+│   │   ├── db.py            
+│   │   ├── models.py            
+│   ├── admin_create.py                  
+│   ├── seed.py                  
+│   ├── run.py                  # Flask Application
 ├── tests/                      # Test Suite
 │   └── test_app.py             # Application Tests
 ├── Dockerfile                  # Container Definition
-├── docker-compose.yml          # Multi-container Setup
+├── render.yaml                 # Multi-container Setup
 ├── requirements.txt            # Project Dependencies
 └── README.md                   # Documentation
 ```
@@ -165,7 +212,55 @@ takeapaw/
 * `GET /health` - Health check endpoint
 * `GET /debug` - System debugging information
 
-## 🚀 Automated Deployment (CI/CD)
+## 🔄 CI/CD Pipeline
+
+### Pipeline Overview
+
+Our project implements a complete CI/CD workflow following modern DevOps practices.
+┌─────────────┐
+│  Developer  │
+│  Git Push   │
+└──────┬──────┘
+│
+▼
+┌─────────────────────────────────┐
+│     GitHub Repository           │
+│  (Version Control - PW#1)       │
+└──────┬──────────────────────────┘
+│
+├──────────────────────┐
+│                      │
+▼                      ▼
+┌─────────────┐      ┌─────────────┐
+│   CI Tests  │      │   CD Build  │
+│  (PW#4)     │      │   (PW#6)    │
+│             │      │             │
+│ • pytest    │      │ • Docker    │
+│ • PostgreSQL│      │ • GHCR Push │
+│ • 7 tests   │      │ • Tag: SHA  │
+└──────┬──────┘      └──────┬──────┘
+│                    │
+│ PASS               │
+└──────────┬─────────┘
+│
+▼
+┌─────────────────┐
+│  Render Deploy  │
+│    (PW#7)       │
+│                 │
+│ • Auto-detect   │
+│ • Pull image    │
+│ • Deploy        │
+└────────┬────────┘
+│
+▼
+┌─────────────────┐
+│  Live Site      │
+│    (PW#8)       │
+│                 │
+│ • UptimeRobot   │
+│ • Health checks │
+└─────────────────┘
 
 ### Pipeline Flow
 
@@ -175,15 +270,11 @@ takeapaw/
 4. **Auto-Deploy** → Render detects changes → Deploys automatically
 5. **Live Update** → Application updated in production
 
-### Manual Trigger Demo
 
-To make a visible change for presentation:
-
-```bash
-echo "# Demo auto-deployment" >> demo.txt
-git add .
-git commit -m "demo: testing CI/CD pipeline"
-git push origin main
+### Pipeline Status Badges
+```markdown
+[![CI Status](https://github.com/Lachi7/take-a-paw1/actions/workflows/ci.yml/badge.svg)](https://github.com/Lachi7/take-a-paw1/actions/workflows/ci.yml)
+[![CD Status](https://github.com/Lachi7/take-a-paw1/actions/workflows/cd.yml/badge.svg)](https://github.com/Lachi7/take-a-paw1/actions/workflows/cd.yml)
 ```
 
 ## 🔐 Admin Panel
@@ -206,31 +297,8 @@ The admin dashboard allows you to:
 
 > ⚠️ Note: In demo mode, an admin session may be automatically enabled for easier access during testing.
 
-## ⚙️ Configuration
 
-### Environment Variables
-
-* `SECRET_KEY=your-secret-key-here`
-* `FLASK_ENV=production`
-* `CAT_API_KEY=your-cat-api-key`
-* `DOG_API_KEY=your-dog-api-key`
-
-### Production Settings
-
-* **WSGI Server**: Gunicorn
-* **Process Manager**: Render
-* **Health Checks**: Automatic monitoring
-* **Logging**: Structured application logs
-
-## 🔒 Security Features
-
-* Non-root Docker user execution
-* Environment variable configuration
-* SQL injection prevention
-* XSS protection through template escaping
-* Secure headers configuration
-
-## 📊 Monitoring & Analytics
+## 📊 Monitoring & Rollback
 
 ### Health Monitoring
 
@@ -245,7 +313,7 @@ The admin dashboard allows you to:
 * Uptime statistics
 * Deployment success rates
 
-## 🚨 Rollback Procedures
+### Rollback Procedures
 
 If deployment issues occur:
 
@@ -262,8 +330,6 @@ This project was created and maintained by:
 - **Shahin Alakparov** – [GitHub Profile](https://github.com/shahin1717)
 - **Nazrin Aliyeva** – [GitHub Profile](https://github.com/Lachi7)
 - **Fidan Alizada** – [GitHub Profile](https://github.com/Fidannnnn)
-
-
 
 ## 🤝 Contributing
 
@@ -299,32 +365,43 @@ We welcome contributions! Please see our workflow:
 
 ### Common Issues
 
-#### Docker Build Failures
-
-* Clean build:
-
-  ```bash
-  docker system prune
-  docker build --no-cache -t takeapaw:latest .
-  ```
-
-#### Port Conflicts
-
-* Resolve conflicts if port 5000 is in use.
-
-### Development
-
+**Issue: "ModuleNotFoundError: No module named 'app'"**
 ```bash
-git clone https://github.com/your-username/take-a-paw.git
-cd take-a-paw
-pip install -r requirements.txt
-cd src && python run.py
+# Solution: Ensure you're in the src/ directory
+cd src
+python run.py
 ```
 
-### Docker
-
+**Issue: "DATABASE_URL is not set"**
 ```bash
-docker build -t takeapaw .
-docker run -p 5000:5000 takeapaw
+# Solution: Create .env file or export variable
+export DATABASE_URL="postgresql://localhost:5432/takeapaw"
+```
+
+**Issue: "Port 5000 already in use"**
+```bash
+# Solution: Kill process on port 5000
+# Linux/Mac:
+lsof -ti:5000 | xargs kill -9
+
+# Windows:
+netstat -ano | findstr :5000
+taskkill /PID  /F
+
+# Or change port in run.py:
+app.run(host="0.0.0.0", port=8000)
+```
+
+**Issue: Image upload fails**
+```bash
+# Solution: Verify Cloudinary credentials
+python -c "import cloudinary; print(cloudinary.config())"
+```
+
+**Issue: Tests fail with database errors**
+```bash
+# Solution: Install test database
+# Use SQLite for quick tests (automatic)
+# Or setup PostgreSQL for integration tests
 ```
 
