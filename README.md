@@ -222,12 +222,6 @@ takeapaw/
 5. **Live Update** → Application updated in production
 
 
-### Pipeline Status Badges
-```markdown
-[![CI Status](https://github.com/Lachi7/take-a-paw1/actions/workflows/ci.yml/badge.svg)](https://github.com/Lachi7/take-a-paw1/actions/workflows/ci.yml)
-[![CD Status](https://github.com/Lachi7/take-a-paw1/actions/workflows/cd.yml/badge.svg)](https://github.com/Lachi7/take-a-paw1/actions/workflows/cd.yml)
-```
-
 ## 🔐 Admin Panel
 
 Take A Paw includes a fully featured **Admin Panel** for managing the platform.
