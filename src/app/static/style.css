@@ -207,7 +207,7 @@ main {
   text-decoration: none;
   padding: 0.4rem 0.8rem;
   border-radius: 8px;
-  margin-top: 0.5rem;
+  margin: 0.5rem;
   font-size: 0.9rem;
 }
 
@@ -537,6 +537,51 @@ h2 { margin-bottom: 1rem; }
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.6rem;
+  }
+
+  .nav-search {
+    width: 100%;
+  }
+
+  .nav-search input {
+    width: 100%;
+  }
+
+  .navbar a,
+  .linklike {
+    font-size: 0.95rem;
+  }
+
+  header {
+    padding: 0.6rem 1rem;
+  }
+  .swipe-card img {
+    height: 55%; /* was 65% */
+  }
+
+  .swipe-card-content {
+    height: 45%; /* was 35% */
+  }
+
+  .swipe-card-content {
+    padding: 1.2rem;
+  }
+
+  .btn.outline {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
   .swipe-interface {
     height: 450px;
     max-width: 100%;
@@ -559,6 +604,51 @@ h2 { margin-bottom: 1rem; }
 }
 
 @media (max-width: 480px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.6rem;
+  }
+
+  .nav-search {
+    width: 100%;
+  }
+
+  .nav-search input {
+    width: 100%;
+  }
+
+  .navbar a,
+  .linklike {
+    font-size: 0.95rem;
+  }
+
+  header {
+    padding: 0.6rem 1rem;
+  }
+  .swipe-card img {
+    height: 55%; /* was 65% */
+  }
+
+  .swipe-card-content {
+    height: 45%; /* was 35% */
+  }
+
+  .swipe-card-content {
+    padding: 1.2rem;
+  }
+
+  .btn.outline {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
   .swipe-interface {
     height: 400px;
   }
