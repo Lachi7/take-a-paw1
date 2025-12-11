@@ -80,10 +80,19 @@ main {
   padding: 2rem;
 }
 
+.content-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
 .pet-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;  /* good card width */
+  margin: 0 auto;    /* center the column on page */
 }
 
 .pet-card {
@@ -104,12 +113,10 @@ main {
 }
 
 .pet-info { padding: 1rem; }
-
 .pet-info h2 {
   font-size: 1.2rem;
   margin-bottom: 0.3rem;
 }
-
 .species, .meta, .location { font-size: 0.9rem; color: #666; margin-bottom: 0.3rem; }
 /* Base outline button */
 .btn.outline {

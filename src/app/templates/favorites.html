@@ -1,7 +1,9 @@
 {% extends "base.html" %} {% block title %}My Favorites — Take A Paw{% endblock
 %} {% block content %}
 {% if pets %}
-<h2>My Favorites</h2>
+<div class="content-wrapper">
+  <h2 style="justify-self: center;">My Favorites</h2>
+
 <section class="pet-list">
   {% for pet in pets %}
   <div class="pet-card">
@@ -16,6 +18,7 @@
   </div>
   {% endfor %}
 </section>
+</div>
 {% else %}
 <div class="empty-state">
     <img src="/static/nofavorites.jpg" alt="No pets" class="empty-illustration">
