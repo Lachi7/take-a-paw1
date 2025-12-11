@@ -17,7 +17,7 @@ body {
 }
 
 header {
-  background: var(--accent);
+  background: #C8A2C8;
   color: #fff;
   padding: 0.8rem 1.5rem;
 }
