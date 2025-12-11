@@ -132,14 +132,14 @@ main {
 
 /* Hover */
 .btn.outline:hover {
-    border-color: #7c4dff;      /* purple */
-    color: #7c4dff;             /* purple */
+    border-color: #3c2614;      /* purple */
+    color: #3c2614;             /* purple */
     box-shadow: 0 3px 6px rgba(124, 77, 255, 0.25);
     transform: translateY(-2px);
 }
 
 .btn.primary {
-    background: #7c4dff;
+    background: #3c2614;
     color: #fff;
     border: none;
     padding: 10px 20px;
