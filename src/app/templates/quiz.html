@@ -1,5 +1,6 @@
-{% extends "base.html" %} {% block title %}Quiz — Take A Paw{% endblock %} {%
-block content %}
+{% extends "base.html" %} 
+{% block title %}Quiz — Take A Paw{% endblock %} 
+{% block content %}
 <style>
   .quiz-container {
     max-width: 800px;
@@ -86,54 +87,59 @@ block content %}
   <p>Answer a few questions to help us recommend the best pet for you!</p>
 
   <form id="quizForm" class="quiz-form mt-4">
+    <!-- Home type best suited -->
     <div class="form-group">
-      <label for="homeType">What type of home do you have?</label>
-      <select id="homeType" required>
-        <option value="" disabled selected>Select Home Type</option>
+      <label for="homeType">Home type best suited</label>
+      <select id="homeType">
+        <option value="">No preference</option>
         <option value="apartment">Apartment</option>
-        <option value="house">House</option>
-        <option value="other">Other</option>
+        <option value="house_with_yard">House with yard</option>
+        <option value="farm">Farm / rural</option>
       </select>
     </div>
 
+    <!-- Pet activity level -->
     <div class="form-group">
-      <label for="activityLevel">What is your activity level?</label>
-      <select id="activityLevel" required>
-        <option value="" disabled selected>Select Activity Level</option>
+      <label for="activityLevel">Pet activity level</label>
+      <select id="activityLevel">
+        <option value="">No preference</option>
         <option value="low">Low</option>
         <option value="medium">Medium</option>
         <option value="high">High</option>
       </select>
     </div>
 
+    <!-- Experience level required -->
     <div class="form-group">
-      <label for="experience">Do you have any experience with pets?</label>
-      <select id="experience" required>
-        <option value="" disabled selected>Select Experience Level</option>
-        <option value="none">None</option>
-        <option value="some">Some</option>
-        <option value="a_lot">A lot</option>
+      <label for="experience">Experience level required</label>
+      <select id="experience">
+        <option value="">No preference</option>
+        <option value="beginner">Beginner-friendly</option>
+        <option value="intermediate">Some experience</option>
+        <option value="advanced">Experienced only</option>
       </select>
     </div>
 
+    <!-- Time commitment needed -->
     <div class="form-group">
-      <label for="timeCommitment"
-        >How much time can you commit to your pet?</label
-      >
-      <select id="timeCommitment" required>
-        <option value="" disabled selected>Select Time Commitment</option>
-        <option value="less_than_1_hour">Less than 1 hour per day</option>
-        <option value="1_3_hours">1-3 hours per day</option>
-        <option value="more_than_3_hours">More than 3 hours per day</option>
+      <label for="timeCommitment">Time commitment needed</label>
+      <select id="timeCommitment">
+        <option value="">No preference</option>
+        <option value="low">Low</option>
+        <option value="medium">Moderate</option>
+        <option value="high">High</option>
       </select>
     </div>
 
+    <!-- Best family situation -->
     <div class="form-group">
-      <label for="familySituation">Do you have children or other pets?</label>
-      <select id="familySituation" required>
-        <option value="" disabled selected>Select Family Situation</option>
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
+      <label for="familySituation">Best family situation</label>
+      <select id="familySituation">
+        <option value="">No preference</option>
+        <option value="no_children">No children</option>
+        <option value="older_children">Older children</option>
+        <option value="small_children">Small children</option>
+        <option value="other_pets_ok">Good with other pets</option>
       </select>
     </div>
 
