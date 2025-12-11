@@ -91,8 +91,8 @@ main {
   flex-direction: column;
   gap: 1.5rem;
   width: 100%;
-  max-width: 600px;  /* good card width */
-  margin: 0 auto;    /* center the column on page */
+  max-width: 600px; 
+  margin: 0 auto;   
 }
 
 .pet-card {
@@ -187,14 +187,12 @@ main {
 }
 
 
-/* Active favorited state button */
 .favorited {
     color: red !important;
     border-color: red !important;
     font-weight: 700;
 }
 
-/* Hover for "♥ Unfavorite" */
 .favorited:hover {
     color: #cc0000 !important;
     border-color: #cc0000 !important;
