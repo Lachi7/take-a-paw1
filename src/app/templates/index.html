@@ -69,6 +69,7 @@
   }
 
   function handleTouchStart(e) {
+    if (e.target.closest(".btn.outline")) return;
     startX = e.touches[0].clientX;
     isSwiping = true;
     currentCard.style.transition = "none";
@@ -88,6 +89,7 @@
   }
 
   function handleMouseStart(e) {
+    if (e.target.closest(".btn.outline")) return;
     startX = e.clientX;
     isSwiping = true;
     currentCard.style.transition = "none";
