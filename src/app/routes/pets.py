@@ -369,7 +369,17 @@ def favorites_page():
 
 @bp.get("/")
 def home_index():
-    pets = Pet.query.filter_by(adopted=False).order_by(func.random()).all()
+    user_id = session.get("user_id")
+
+    q = Pet.query.filter_by(adopted=False)
+
+    if user_id:
+        own_ids = db.session.query(Pet.id).filter_by(owner_id=user_id)
+        fav_ids = db.session.query(Favorite.pet_id).filter_by(user_id=user_id)
+
+        q = q.filter(~Pet.id.in_(own_ids)).filter(~Pet.id.in_(fav_ids))
+
+    pets = q.order_by(func.random()).all()
 
     return render_template("index.html", pets=pets)
 
