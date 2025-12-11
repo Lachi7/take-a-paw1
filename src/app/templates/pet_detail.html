@@ -51,13 +51,28 @@ Take A Paw{% endblock %} {% block content %}
 </form>
 {% endif %}
       {% if session.get('user_id') == pet.owner_id %}
-      <form
-        method="post"
-        action="{{ url_for('pets.delete_pet', pet_id=pet.id) }}"
-        onsubmit="return confirm('Are you sure you want to delete this pet?');"
-      >
-        <button type="submit" class="btn danger">Delete Pet</button>
-      </form>
+
+  <!-- Mark as Adopted Button -->
+  {% if not pet.adopted %}
+  <form
+    method="post"
+    action="{{ url_for('pets.mark_adopted', pet_id=pet.id) }}"
+    onsubmit="return confirm('Mark this pet as adopted?');"
+    style="margin-bottom: 1rem;"
+  >
+    <button type="submit" class="btn success">Mark as Adopted</button>
+  </form>
+  {% endif %}
+
+  <!-- Delete Button -->
+  <form
+    method="post"
+    action="{{ url_for('pets.delete_pet', pet_id=pet.id) }}"
+    onsubmit="return confirm('Are you sure you want to delete this pet?');"
+  >
+    <button type="submit" class="btn danger">Delete Pet</button>
+  </form>
+
       {% endif %}
     </div>
   </div>

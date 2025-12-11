@@ -86,6 +86,30 @@ def pet_detail(pet_id: int):
     return jsonify(serialize_pet(p))
 
 
+@bp.post("/pets/<int:pet_id>/adopt")
+@login_required
+def mark_adopted(pet_id: int):
+    user_id = session.get("user_id")
+    pet = Pet.query.get(pet_id)
+
+    if not pet:
+        flash("Pet not found.", "error")
+        return redirect(url_for("pets.home_index"))
+
+    if pet.owner_id != user_id:
+        abort(403)
+
+    pet.adopted = True
+    try:
+        db.session.commit()
+        flash(f"{pet.name} has been marked as adopted!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("Error marking pet as adopted. Please try again.", "error")
+        print("Adoption error:", e)
+
+    return redirect(url_for("pets.my_listings_page"))
+
 @bp.get("/pets/search")
 def search():
     """
