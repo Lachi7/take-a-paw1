@@ -174,19 +174,29 @@
             let html = "<h3>Recommended Pets</h3><ul>";
             pets.forEach(function (pet) {
               html += `
-                  <li>
-                    <strong>${pet.name}</strong> (${pet.species}, ${pet.breed})
-                    <br>
-                    Location: ${pet.location}
-                    <a href="/pet/${pet.id}" class="btn outline">View Details</a>
-                  </li>
-                `;
+                <li>
+                  <strong>${pet.name}</strong> (${pet.species}, ${pet.breed})<br>
+                  Location: ${pet.location}<br>
+                  <button 
+                    type="button" 
+                    class="btn outline view-details-btn" 
+                    data-pet-id="${pet.id}">
+                    View Details
+                  </button>
+                  <div 
+                    class="pet-details" 
+                    id="pet-details-${pet.id}" 
+                    style="display:none; margin-top:0.5rem;">
+                  </div>
+                </li>
+              `;
             });
             html += "</ul>";
             $("#result").html(html);
           } else {
-            $("#result").html("<p>Sorry, no pets match your criteria.</p>");
+            $("#result").html("<p>No matching pets found.</p>");
           }
+
         },
         error: function () {
           $("#result").html(
