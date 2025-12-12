@@ -206,12 +206,7 @@ def admin_delete_user(user_id):
 @bp.post("/pets/delete/<int:pet_id>")
 @admin_required
 def admin_delete_pet(pet_id):
-    """
-    Delete a pet by id.
 
-    - Only accessible to admins.
-    - If pet is not found, returns 404.
-    """
     # find pet or return 404
     pet = Pet.query.get_or_404(pet_id)
 
