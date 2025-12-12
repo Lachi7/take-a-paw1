@@ -41,8 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <ul class="nav-links">
           <li><a href="/">Home</a></li>
           <li><a href="/quiz">Quiz</a></li>
-        
-          <li>  test</li>  {% if session.get('user_id') %}
+          {% if session.get('user_id') %}
           <li><a href="{{ url_for('pets.add_pet_form') }}">Add Pet</a></li>
           <li><a href="/favorites">Favorites</a></li>
           <li><a href="/me/listings">My Listings</a></li>
