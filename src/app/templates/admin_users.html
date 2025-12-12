@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %} {% block title %}Admin - Users{% endblock %} {%
 block content %}
 <h2>Users List</h2>
-<table class="table">
+<table id="usersTable" class="table display">
   <thead>
     <tr>
       <th>ID</th>
@@ -31,4 +31,17 @@ block content %}
     {% endfor %}
   </tbody>
 </table>
+{% endblock %}
+{% block head %}
+<script>
+$(document).ready(function () {
+  $("#usersTable").DataTable({
+    pageLength: 10,
+    order: [[0, "desc"]],
+    columnDefs: [
+      { orderable: false, targets: 4 } // disable sorting on Action column
+    ]
+  });
+});
+</script>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %} {% block title %}Admin - Pets{% endblock %} {%
 block content %}
 <h2>Pets List</h2>
-<table class="table">
+<table id="petsTable" class="display table">
   <thead>
     <tr>
       <th>ID</th>
@@ -33,4 +33,14 @@ block content %}
     {% endfor %}
   </tbody>
 </table>
+{% endblock %}
+{% block head %}
+<script>
+$(document).ready(function () {
+  $("#petsTable").DataTable({
+    pageLength: 10,
+    order: [[0, "desc"]],
+  });
+});
+</script>
 {% endblock %}
