@@ -276,15 +276,6 @@ This project was created and maintained by:
 - **Nazrin Aliyeva** – [GitHub Profile](https://github.com/Lachi7)
 - **Fidan Alizada** – [GitHub Profile](https://github.com/Fidannnnn)
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our workflow:
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/improvement`
-3. **Commit changes**: `git commit -m 'Add some improvement'`
-4. **Push to branch**: `git push origin feature/improvement`
-5. **Open a Pull Request**
 
 ### Development Standards
 
@@ -320,7 +311,7 @@ python run.py
 **Issue: "DATABASE_URL is not set"**
 ```bash
 # Solution: Create .env file or export variable
-export DATABASE_URL="postgresql://localhost:5432/takeapaw"
+export DATABASE_URL="postgresql/mysql+pymysql://localhost:5432/takeapaw"
 ```
 
 **Issue: "Port 5000 already in use"**
